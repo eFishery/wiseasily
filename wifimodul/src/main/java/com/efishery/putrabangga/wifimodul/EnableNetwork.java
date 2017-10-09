@@ -90,7 +90,7 @@ public class EnableNetwork {
             IntentFilter i = new IntentFilter();
             i.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
             context.registerReceiver(broadcastWifiReceiver,i);
-            timeOut(new ConnectorCallback.timeOutCallback() {
+            timeOut(30, new ConnectorCallback.timeOutCallback() {
 
                 @Override
                 public void onStartCountDown(CountDownTimer countDownTimer) {
@@ -117,7 +117,7 @@ public class EnableNetwork {
                 IntentFilter i = new IntentFilter();
                 i.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
                 context.registerReceiver(broadcastNetworkReceiver,i);
-                timeOut(new ConnectorCallback.timeOutCallback() {
+                timeOut(30, new ConnectorCallback.timeOutCallback() {
 
                     @Override
                     public void onStartCountDown(CountDownTimer countDownTimer) {
@@ -149,8 +149,8 @@ public class EnableNetwork {
         }
     };
 
-    private void timeOut(final ConnectorCallback.timeOutCallback callback){
-        CountDownTimer countDownTimer = new CountDownTimer(30000, 1000) {
+    public static void timeOut(int timeout, final ConnectorCallback.timeOutCallback callback){
+        CountDownTimer countDownTimer = new CountDownTimer(timeout*1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 Log.d("timeOut","onTick ");

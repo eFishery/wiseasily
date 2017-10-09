@@ -14,7 +14,7 @@ public interface ConnectorCallback {
 
     interface ConnectWifiCallback {
         void onWifiConnected();
-
+        void onProgress(String message);
         void onWifiFail(int errorCode);
     }
 

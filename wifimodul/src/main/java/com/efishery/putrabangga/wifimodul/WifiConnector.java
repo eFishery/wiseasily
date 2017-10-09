@@ -8,6 +8,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import java.util.Locale;
+
 /**
  * Bismillahirrahmanirrahim
  * Created by Innovation, eFishery  on 4/20/17.
@@ -31,6 +33,7 @@ public class WifiConnector {
     }
 
     public void connect(final ConnectorCallback.ConnectWifiCallback fcCallback) {
+        fcCallback.onProgress(String.format(Locale.ENGLISH,"Connecting %s", networkSSID));
         Log.d("wifiConnector","Connect");
         enableWifi(true);
         this.fcCallback = fcCallback;

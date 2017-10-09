@@ -6,10 +6,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.CountDownTimer;
 
 import java.util.List;
 
-import timber.log.Timber;
+import static com.efishery.putrabangga.wifimodul.EnableNetwork.timeOut;
 
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
@@ -21,6 +22,7 @@ public class ScanNetwork {
     private final Context context;
     private final WifiManager wifiManager;
     private ConnectorCallback.scanWifiCallback callback;
+    private CountDownTimer broadcastAlwasysScanReceiverCountDownTimer;
 
     public ScanNetwork(Context context){
         this.context = context;
@@ -51,10 +53,22 @@ public class ScanNetwork {
         i.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
         i.addAction(WifiManager.RSSI_CHANGED_ACTION);
         context.registerReceiver(broadcastAlwasysScanReceiver,i);
+        timeOut(30, new ConnectorCallback.timeOutCallback() {
+            @Override
+            public void onStartCountDown(CountDownTimer countDownTimer) {
+                broadcastAlwasysScanReceiverCountDownTimer = countDownTimer;
+            }
+
+            @Override
+            public void onOutTime() {
+                context.unregisterReceiver(broadcastAlwasysScanReceiver);
+            }
+        });
     }
 
     public void stopScan(){
-        if(broadcastAlwasysScanReceivercontext!=null){
+        if(broadcastAlwasysScanReceivercontext!=null && broadcastAlwasysScanReceiverCountDownTimer!=null){
+            broadcastAlwasysScanReceiverCountDownTimer.cancel();
             broadcastAlwasysScanReceivercontext.unregisterReceiver(broadcastAlwasysScanReceiver);
         }
     }
@@ -62,7 +76,6 @@ public class ScanNetwork {
     private BroadcastReceiver broadcastScanReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Timber.d("onReceiveBroadcast: " + intent.toString());
             context.unregisterReceiver(broadcastScanReceiver);
             callback.onWifiScanned(wifiManager.getScanResults());
         }
@@ -73,6 +86,7 @@ public class ScanNetwork {
     private BroadcastReceiver broadcastAlwasysScanReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            broadcastAlwasysScanReceiverCountDownTimer.cancel();
             broadcastAlwasysScanReceivercontext = context;
             callback.onWifiScanned(wifiManager.getScanResults());
         }
