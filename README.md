@@ -1,4 +1,4 @@
-[![Release](https://jitpack.io/v/User/Repo.svg)](https://jitpack.io/#User/Repo)
+[![Release](https://jitpack.io/v/putrabangga/wiseasily.svg)](https://jitpack.io/#putrabangga/wiseasily)
 
 WisEasily
 ========
