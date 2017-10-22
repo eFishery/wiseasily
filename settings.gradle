@@ -1,1 +1,1 @@
-include ':app', ':wifimodul'
+include ':sample', ':wiseasily'
