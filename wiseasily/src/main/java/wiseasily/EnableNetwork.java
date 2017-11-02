@@ -16,50 +16,41 @@ import android.util.Log;
 
 import java.util.List;
 
+import static wiseasily.util.TimeOutUtil.timeOut;
+
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
  * Created by putrabangga on 9/2/17.
  */
 
-public class EnableNetwork {
+class EnableNetwork {
     private final WifiManager wifiManager;
     private final ConnectivityManager connectivityManager;
     private final Context context;
     private ConnectorCallback.enableWifiCallback callback;
     private String networkSSID;
-    public CountDownTimer broadcastWifiReceiverCountDownTimer;
+    private CountDownTimer broadcastWifiReceiverCountDownTimer;
     private CountDownTimer broadcastNetworkReceiverCountDownTimer;
 
-    public EnableNetwork(Context context){
+    EnableNetwork(Context context){
 
         this.context = context;
         wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
-    public void enable(String ssid, ConnectorCallback.enableWifiCallback callback) {
+    void enable(String ssid, ConnectorCallback.enableWifiCallback callback) {
         this.callback = callback;
         this.networkSSID = ssid;
-        Log.d("wifiConnector","enable networkSSID "+networkSSID);
 
-        List<ScanResult> wireless = wifiManager.getScanResults();
-        Log.d("wifiConnector","wireless"+wireless);
-        boolean scanContainsSsid = false;
-        for(ScanResult scanResult : wireless){
-            if(scanResult.SSID != null && scanResult.SSID.equals(networkSSID)){
-                scanContainsSsid = true;
-                break;
-            }
-        }
+        List<ScanResult> scanResults = wifiManager.getScanResults();
+        boolean scanContainsSsid = isScanContainsSsid(this.networkSSID, scanResults);
         if(!scanContainsSsid){
-            Log.d("wifiConnector","!scanContainsSsid");
             callback.onWifiFail(662);
         }else {
-            Log.d("wifiConnector","scanContainsSsid");
             boolean configContainsSsid = false;
             String ssidConfig = "\""+networkSSID+"\"";
             for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()){
-                Log.d("wifiConnector","wifiConfiguration"+wifiConfiguration);
                 if(wifiConfiguration.SSID != null && wifiConfiguration.SSID.equals(ssidConfig)){
                     configContainsSsid = true;
                     wifiManager.enableNetwork(wifiConfiguration.networkId, true);
@@ -90,7 +81,7 @@ public class EnableNetwork {
             IntentFilter i = new IntentFilter();
             i.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
             context.registerReceiver(broadcastWifiReceiver,i);
-            timeOut(30, new ConnectorCallback.timeOutCallback() {
+            timeOut(15, new ConnectorCallback.timeOutCallback() {
 
                 @Override
                 public void onStartCountDown(CountDownTimer countDownTimer) {
@@ -105,6 +96,17 @@ public class EnableNetwork {
         }
     }
 
+    static boolean isScanContainsSsid(String networkSSID, List<ScanResult> scanResults) {
+        boolean scanContainsSsid = false;
+        for(ScanResult scanResult : scanResults){
+            if(scanResult.SSID != null && scanResult.SSID.equals(networkSSID)){
+                scanContainsSsid = true;
+                break;
+            }
+        }
+        return scanContainsSsid;
+    }
+
     private BroadcastReceiver broadcastWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
@@ -117,7 +119,7 @@ public class EnableNetwork {
                 IntentFilter i = new IntentFilter();
                 i.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
                 context.registerReceiver(broadcastNetworkReceiver,i);
-                timeOut(30, new ConnectorCallback.timeOutCallback() {
+                timeOut(15, new ConnectorCallback.timeOutCallback() {
 
                     @Override
                     public void onStartCountDown(CountDownTimer countDownTimer) {
@@ -137,29 +139,12 @@ public class EnableNetwork {
         @Override
         public void onReceive(final Context context, Intent intent) {
             NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-            Log.d("wifiConnector","activeNetwork "+activeNetwork);
             String ssidConfig = "\""+networkSSID+"\"";
-            Log.d("wifiConnector","ssidConfig "+ssidConfig);
             if(activeNetwork!=null && activeNetwork.getState() == NetworkInfo.State.CONNECTED && activeNetwork.getExtraInfo().equals(ssidConfig)){
                 broadcastNetworkReceiverCountDownTimer.cancel();
-                Log.d("wifiConnector","activeNetwork Connected into "+ssidConfig);
                 context.unregisterReceiver(broadcastNetworkReceiver);
                 callback.onWifiEnabled();
             }
         }
     };
-
-    public static void timeOut(int timeout, final ConnectorCallback.timeOutCallback callback){
-        CountDownTimer countDownTimer = new CountDownTimer(timeout*1000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                Log.d("timeOut","onTick ");
-            }
-
-            public void onFinish() {
-                callback.onOutTime();
-            }
-        }.start();
-        callback.onStartCountDown(countDownTimer);
-    }
 }

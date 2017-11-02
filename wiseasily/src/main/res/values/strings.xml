@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WifiModul</string>
+    <string name="connecting">Connecting %s</string>
 </resources>
