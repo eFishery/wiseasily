@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="connecting">Menghubungi %s</string>
+    <string name="network_not_found">Wifi Network Not Found</string>
 </resources>

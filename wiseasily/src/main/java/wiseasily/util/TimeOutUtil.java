@@ -3,7 +3,7 @@ package wiseasily.util;
 import android.os.CountDownTimer;
 import android.util.Log;
 
-import wiseasily.ConnectorCallback;
+import wiseasily.source.SourceCallback;
 
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
@@ -12,7 +12,7 @@ import wiseasily.ConnectorCallback;
 
 public class TimeOutUtil {
 
-    public static void timeOut(int timeout, final ConnectorCallback.timeOutCallback callback){
+    public static void timeOut(int timeout, final SourceCallback.timeOutCallback callback){
         CountDownTimer countDownTimer = new CountDownTimer(timeout*1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -23,6 +23,6 @@ public class TimeOutUtil {
                 callback.onOutTime();
             }
         }.start();
-        callback.onStartCountDown(countDownTimer);
+        callback.onCountDownStart(countDownTimer);
     }
 }
