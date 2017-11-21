@@ -23,7 +23,7 @@ Grab via Maven:
 <dependency>
   <groupId>com.github.eFishery</groupId>
   <artifactId>wifi-module-android</artifactId>
-  <version>v0.1-beta</version>
+  <version>v0.1.1-beta</version>
 </dependency>
 ```
 or Gradle:
@@ -35,7 +35,7 @@ allprojects {
     }
 }
 dependencies {
-    compile 'com.github.eFishery:wifi-module-android:v0.1-beta'
+    compile 'com.github.eFishery:wifi-module-android:v0.1.1-beta'
 }
 ```
 
