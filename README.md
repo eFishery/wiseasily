@@ -45,6 +45,7 @@ Usage Sample
 Connect to wifi with ssid name : efishery_2017
 
 ```java
+
 new WisEasily(this).connect("efishery_2017", new SourceCallback.WisEasilyCallback() {
        @Override
        public void onSuccess() {
