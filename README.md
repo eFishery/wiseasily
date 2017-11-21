@@ -21,9 +21,9 @@ Grab via Maven:
     </repository>
 </repositories>
 <dependency>
-  <groupId>com.github.putrabangga</groupId>
+  <groupId>com.github.eFishery</groupId>
   <artifactId>wiseasily</artifactId>
-  <version>v0.1-alpha</version>
+  <version>v0.1-beta</version>
 </dependency>
 ```
 or Gradle:
@@ -35,7 +35,7 @@ allprojects {
     }
 }
 dependencies {
-    compile 'com.github.putrabangga:wiseasily:v0.1-alpha'
+    compile 'com.github.eFishery:wiseasily:v0.1-beta'
 }
 ```
 
