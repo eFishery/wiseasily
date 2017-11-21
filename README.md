@@ -1,4 +1,4 @@
-[![Release](https://jitpack.io/v/putrabangga/wiseasily.svg)](https://jitpack.io/#putrabangga/wiseasily)
+[![Release](https://jitpack.io/v/putrabangga/wiseasily.svg)](https://jitpack.io/#eFishery/wifi-module-android)
 
 WisEasily
 ========
@@ -22,7 +22,7 @@ Grab via Maven:
 </repositories>
 <dependency>
   <groupId>com.github.eFishery</groupId>
-  <artifactId>wiseasily</artifactId>
+  <artifactId>wifi-module-android</artifactId>
   <version>v0.1-beta</version>
 </dependency>
 ```
@@ -35,7 +35,7 @@ allprojects {
     }
 }
 dependencies {
-    compile 'com.github.eFishery:wiseasily:v0.1-beta'
+    compile 'com.github.eFishery:wifi-module-android:v0.1-beta'
 }
 ```
 
