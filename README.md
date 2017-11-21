@@ -7,6 +7,7 @@ Wise and Easily to use Android Wifi Modul Functional by Efishery, Inc.
 
 For more information please see [the website][1].
 
+For Sample [Download][https://drive.google.com/open?id=1LeuABggbQJqk5itoM6Gv1Q2zgqvm84Am].
 
 Download
 --------
