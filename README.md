@@ -44,22 +44,38 @@ Usage Sample
 Connect to wifi with ssid name : efishery_2017
 
 ```java
-new WifiConnector("efishery_2017", context).connect(new ConnectorCallback.ConnectWifiCallback() {
+new WisEasily(this).connect("efishery_2017", new SourceCallback.WisEasilyCallback() {
        @Override
-       public void onWifiConnected() {
+       public void onSuccess() {
 
        }
 
        @Override
-       public void onProgress(String message) {
-
-       }
-
-       @Override
-       public void onWifiFail(int errorCode) {
+       public void onError(String errorMessage) {
 
        }
    });
+```
+
+Scan Wifi
+
+```java
+
+@Override
+protected void onStart() {
+    super.onStart();
+    new WisEasily(this).scan(this);
+}
+
+@Override
+public void onSuccess(List<ScanResult> scanResults) {
+    adapter.replaceData(scanResults);
+}
+
+@Override
+public void onOutTime() {
+
+}
 ```
 
 

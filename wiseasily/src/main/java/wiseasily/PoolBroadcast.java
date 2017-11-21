@@ -1,18 +1,13 @@
 package wiseasily;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
-
-import java.util.List;
 
 import wiseasily.source.SourceCallback;
 
@@ -23,47 +18,48 @@ import wiseasily.source.SourceCallback;
 
 public class PoolBroadcast extends BroadcastReceiver  {
 
-    private final WifiManager mWifiManager;
     private final Context mContext;
-    private Activity mActivity;
-    private SourceCallback.CompleteDataCallback<List<ScanResult>> startScanCallback;
-    private SourceCallback.SuccessCallback isWifiConnectCallback;
-    private SourceCallback.SuccessCallback isWifiReadyToActionCallback;
-    private SourceCallback.CompleteDataCallback<List<ScanResult>> getScanResultCallback;
+    private SourceCallback.SuccessCallback startScanCallback;
+    private SourceCallback.SuccessCallback isSuplicantCompletedCallback;
+    private SourceCallback.SuccessCallback isConnectivityAction;
+    private SourceCallback.SuccessCallback getScanResultCallback;
+    private CountDownTimer countDownTimer;
 
-    public PoolBroadcast(@NonNull Activity activity) {
-        this.mActivity = activity;
-        this.mContext = mActivity.getApplicationContext();
-        mWifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+    public PoolBroadcast(@NonNull Context context) {
+        this.mContext = context;
+        goAsync();
     }
 
-    public void getScanResult(SourceCallback.CompleteDataCallback<List<ScanResult>> callback){
+    public void closePoolBroadcast(){
+        if(countDownTimer!=null){
+            countDownTimer.cancel();
+        }
+        mContext.unregisterReceiver(this);
+    }
+
+    public void isScanResultsAvailableAction(SourceCallback.SuccessCallback callback){
         this.getScanResultCallback = callback;
         mContext.registerReceiver(this, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        mWifiManager.startScan();
     }
 
-    private void initScan(){
-        mWifiManager.startScan();
-    }
-
-    public void startScan(SourceCallback.CompleteDataCallback<List<ScanResult>> callback){
+    public void startScan(SourceCallback.SuccessCallback callback){
         this.startScanCallback = callback;
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
         intentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
         mContext.registerReceiver(this, intentFilter);
-        initScan();
     }
 
-    public void isWifiTryToConnect(SourceCallback.SuccessCallback callback){
-        this.isWifiConnectCallback = callback;
-        mContext.registerReceiver(this, new IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION));
+    public void isSuplicantComplete(SourceCallback.SuccessCallback callback){
+        this.isSuplicantCompletedCallback = callback;
+        timeOut(callback);
+        mContext.registerReceiver(this, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
     }
 
-    public void isWifiConnected(SourceCallback.SuccessCallback callback){
-        this.isWifiReadyToActionCallback = callback;
+    public void isConnectivityAction(SourceCallback.SuccessCallback callback){
+        this.isConnectivityAction = callback;
+        timeOut(callback);
         mContext.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
@@ -72,51 +68,40 @@ public class PoolBroadcast extends BroadcastReceiver  {
         if(intent.getAction()!=null){
             if(intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)){
                 if(startScanCallback!=null){
-                    if(mActivity!=null && !mActivity.isFinishing()){
-                        startScanCallback.onSuccess(mWifiManager.getScanResults());
-                        initScan();
-                    }else {
-                        mContext.unregisterReceiver(this);
-                    }
+                    startScanCallback.onSuccess();
                 }else if(getScanResultCallback!=null){
-                    getScanResultCallback.onSuccess(mWifiManager.getScanResults());
-                    mContext.unregisterReceiver(this);
+                    getScanResultCallback.onSuccess();
                 }
-            }else if(intent.getAction().equals(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION)){
-                if(intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false)){
-                    if(startScanCallback!=null ){
-                        if(mActivity!=null && !mActivity.isFinishing()){
-                            startScanCallback.onSuccess(mWifiManager.getScanResults());
-                            initScan();
-                        }else {
-                            mContext.unregisterReceiver(this);
-                        }
-                    }else if(isWifiConnectCallback!=null){
-                        isWifiConnectCallback.onSuccess();
-                        mContext.unregisterReceiver(this);
-                    }
+            }else if(intent.getAction().equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION)){
+                if(startScanCallback!=null ){
+                    startScanCallback.onSuccess();
+                }else if(isSuplicantCompletedCallback !=null){
+                    isSuplicantCompletedCallback.onSuccess();
                 }
             }else if(intent.getAction().equals(WifiManager.RSSI_CHANGED_ACTION)){
                 if(startScanCallback!=null ){
-                    if(mActivity!=null && !mActivity.isFinishing()){
-                        startScanCallback.onSuccess(mWifiManager.getScanResults());
-                        initScan();
-                    }else {
-                        mContext.unregisterReceiver(this);
-                    }
+                    startScanCallback.onSuccess();
                 }
             }else if(intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)){
-                if(isWifiReadyToActionCallback!=null){
-                    ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-                    if (connectivityManager != null) {
-                        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-                        if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                            isWifiReadyToActionCallback.onSuccess();
-                            mContext.unregisterReceiver(this);
-                        }
-                    }
+                if(isConnectivityAction !=null){
+                    isConnectivityAction.onSuccess();
                 }
             }
         }
+    }
+
+
+    //In BroadcastReceiver, if pass 10 second and nothing return broadcast, it will be close.
+    private void timeOut(SourceCallback.SuccessCallback callback){
+        countDownTimer = new CountDownTimer(10*1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                closePoolBroadcast();
+                callback.onOutTime();
+            }
+        }.start();
     }
 }

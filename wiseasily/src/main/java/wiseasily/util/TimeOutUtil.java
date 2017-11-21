@@ -12,17 +12,17 @@ import wiseasily.source.SourceCallback;
 
 public class TimeOutUtil {
 
-    public static void timeOut(int timeout, final SourceCallback.timeOutCallback callback){
-        CountDownTimer countDownTimer = new CountDownTimer(timeout*1000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                Log.d("timeOut","onTick ");
-            }
-
-            public void onFinish() {
-                callback.onOutTime();
-            }
-        }.start();
-        callback.onCountDownStart(countDownTimer);
-    }
+//    public static void timeOut(int timeout, final SourceCallback.timeOutCallback callback){
+//        CountDownTimer countDownTimer = new CountDownTimer(timeout*1000, 1000) {
+//
+//            public void onTick(long millisUntilFinished) {
+//                Log.d("timeOut","onTick ");
+//            }
+//
+//            public void onFinish() {
+//                callback.onOutTime();
+//            }
+//        }.start();
+//        callback.onCountDownStart(countDownTimer);
+//    }
 }

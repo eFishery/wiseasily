@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,16 +11,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="wifi"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
 
     <Button
-        android:id="@+id/enableWifi"
+        android:id="@+id/connectWifi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="connect"
-        tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="231dp" />
+        android:layout_below="@+id/ssid"
+        android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/scanWifis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="scan"
+        android:layout_below="@+id/connectWifi"
+        android:layout_centerInParent="true"/>
 
     <EditText
         android:id="@+id/ssid"
@@ -28,8 +36,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="ssid"
-        tools:layout_editor_absoluteX="84dp"
-        tools:layout_editor_absoluteY="94dp" />
+        android:hint="ssid"
+        android:text="efishery_0001C"
+        android:layout_centerInParent="true"/>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

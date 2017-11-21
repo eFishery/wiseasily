@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'me.tatarka.retrolambda'
 group='com.github.putrabangga'
 
 android {
@@ -31,10 +30,6 @@ android {
 buildscript {
     repositories {
         mavenCentral()
-    }
-
-    dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
     }
 }
 
