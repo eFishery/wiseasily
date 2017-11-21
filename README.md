@@ -62,7 +62,6 @@ new WisEasily(this).connect("efishery_2017", new SourceCallback.WisEasilyCallbac
 Scan Wifi
 
 ```java
-
 @Override
 protected void onStart() {
     super.onStart();
