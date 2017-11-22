@@ -22,7 +22,7 @@ Grab via Maven:
 </repositories>
 <dependency>
   <groupId>com.github.eFishery</groupId>
-  <artifactId>wifi-module-android</artifactId>
+  <artifactId>wiseasily</artifactId>
   <version>v0.1.1-beta</version>
 </dependency>
 ```
@@ -35,7 +35,7 @@ allprojects {
     }
 }
 dependencies {
-    compile 'com.github.eFishery:wifi-module-android:v0.1.1-beta'
+    compile 'com.github.eFishery:wifi-wiseasily:v0.1.1-beta'
 }
 ```
 
