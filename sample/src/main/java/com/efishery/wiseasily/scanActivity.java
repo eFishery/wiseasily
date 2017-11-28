@@ -12,7 +12,7 @@ import java.util.List;
 import wiseasily.WisEasily;
 import wiseasily.source.SourceCallback;
 
-public class scanActivity extends AppCompatActivity implements SourceCallback.CompleteDataCallback<List<ScanResult>> {
+public class scanActivity extends AppCompatActivity implements SourceCallback.WisEasilyScanCallback {
 
     private WisEasily wisEasily;
     private WifiAdapter adapter;
@@ -40,12 +40,7 @@ public class scanActivity extends AppCompatActivity implements SourceCallback.Co
     }
 
     @Override
-    public void onSuccess(List<ScanResult> scanResults) {
+    public void onAPChanged(List<ScanResult> scanResults) {
         adapter.replaceData(scanResults);
-    }
-
-    @Override
-    public void onOutTime() {
-
     }
 }

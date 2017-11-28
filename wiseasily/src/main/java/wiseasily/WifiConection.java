@@ -85,7 +85,7 @@ public class WifiConection extends PoolBroadcast{
         });
     }
 
-    protected void scanWifi(SourceCallback.CompleteDataCallback<List<ScanResult>> callback){
+    protected void scanWifi(SourceCallback.WisEasilyScanCallback callback){
         mWifiManager.setWifiEnabled(true);
         mWifiManager.startScan();
         startScan(new SourceCallback.SuccessCallback() {
@@ -93,7 +93,7 @@ public class WifiConection extends PoolBroadcast{
             public void onSuccess() {
                 if(mActivity!=null && !mActivity.isFinishing()){
                     mWifiManager.startScan();
-                    callback.onSuccess(mWifiManager.getScanResults());
+                    callback.onAPChanged(mWifiManager.getScanResults());
                 }else {
                     closePoolBroadcast();
                 }
@@ -101,7 +101,7 @@ public class WifiConection extends PoolBroadcast{
 
             @Override
             public void onOutTime() {
-                callback.onOutTime();
+                scanWifi(callback);
             }
         });
     }

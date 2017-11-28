@@ -1,6 +1,8 @@
 package wiseasily.source;
 
-import android.os.CountDownTimer;
+import android.net.wifi.ScanResult;
+
+import java.util.List;
 
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
@@ -12,6 +14,9 @@ public interface SourceCallback {
     interface WisEasilyCallback {
         void onSuccess();
         void onError(String errorMessage);
+    }
+    interface WisEasilyScanCallback {
+        void onAPChanged(List<ScanResult> scanResults);
     }
 
     interface SuccessCallback {

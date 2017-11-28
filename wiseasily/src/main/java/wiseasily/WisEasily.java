@@ -37,7 +37,7 @@ public class WisEasily extends WifiConection{
         enableWifi(enable, callback);
     }
 
-    public void scan(SourceCallback.CompleteDataCallback<List<ScanResult>> callback) {
+    public void scan(SourceCallback.WisEasilyScanCallback callback) {
         scanWifi(callback);
     }
 }
