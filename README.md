@@ -13,6 +13,7 @@ Download
 --------
 
 Grab via Maven:
+1. Add the JitPack repository to your build file
 ```xml
 <repositories>
     <repository>
@@ -20,6 +21,9 @@ Grab via Maven:
         <url>https://jitpack.io</url>
     </repository>
 </repositories>
+```
+2. Add the dependency
+```xml
 <dependency>
   <groupId>com.github.eFishery</groupId>
   <artifactId>wiseasily</artifactId>
@@ -27,6 +31,7 @@ Grab via Maven:
 </dependency>
 ```
 or Gradle:
+1. Add the JitPack repository to your build file
 ```groovy
 allprojects {
     repositories {
@@ -34,6 +39,9 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
+```
+2. Add the dependency
+```groovy
 dependencies {
     compile 'com.github.eFishery:wifi-wiseasily:v0.1.1-beta'
 }
@@ -45,17 +53,16 @@ Usage Sample
 Connect to wifi with ssid name : efishery_2017
 
 ```java
-
 new WisEasily(this).connect("efishery_2017", new SourceCallback.WisEasilyCallback() {
-       @Override
-       public void onSuccess() {
-
-       }
-
-       @Override
-       public void onError(String errorMessage) {
-
-       }
+   @Override
+      public void onSuccess() {
+   
+      }
+   
+      @Override
+      public void onError(String errorMessage) {
+   
+      }
    });
 ```
 
@@ -67,15 +74,9 @@ protected void onStart() {
     super.onStart();
     new WisEasily(this).scan(this);
 }
-
 @Override
-public void onSuccess(List<ScanResult> scanResults) {
+public void onAPChanged(List<ScanResult> scanResults) {
     adapter.replaceData(scanResults);
-}
-
-@Override
-public void onOutTime() {
-
 }
 ```
 
