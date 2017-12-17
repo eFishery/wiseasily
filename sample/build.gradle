@@ -21,11 +21,7 @@ android {
 
 repositories {
     jcenter()
-    google()
     maven { url 'https://jitpack.io' }
-    maven {
-        url 'https://maven.google.com'
-    }
 }
 dependencies {
     compile 'com.jakewharton:butterknife:8.8.1'
