@@ -1,6 +1,7 @@
 package wiseasily;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -17,8 +18,8 @@ import wiseasily.source.SourceCallback;
 
 public class WisEasily extends WifiConection{
 
-    public WisEasily(Activity activity) {
-        super(activity);
+    public WisEasily(@NonNull Context context) {
+        super(context);
     }
 
     public void connect(@NonNull String ssid, final SourceCallback.WisEasilyCallback callback) {

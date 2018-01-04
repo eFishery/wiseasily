@@ -15,13 +15,18 @@ public interface SourceCallback {
         void onSuccess();
         void onError(String errorMessage);
     }
+
     interface WisEasilyScanCallback {
         void onAPChanged(List<ScanResult> scanResults);
     }
 
+    interface APFoundCallback {
+        void onAPFound();
+        void onAPNotFound();
+    }
+
     interface SuccessCallback {
         void onSuccess();
-        void onOutTime();
     }
 
     interface CompleteDataCallback<T> {
