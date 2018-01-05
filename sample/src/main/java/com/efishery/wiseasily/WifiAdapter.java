@@ -2,7 +2,6 @@ package com.efishery.wiseasily;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import com.efishery.putrabangga.wifi.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.efishery.wiseasily.SignalUtil.getSignal;
+import static com.efishery.wiseasily.util.SignalUtil.getSignal;
 
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ

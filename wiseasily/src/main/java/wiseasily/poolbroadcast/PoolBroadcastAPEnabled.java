@@ -41,8 +41,8 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction()!=null && intent.getAction().equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION)){
             if(mWifiManager.getConnectionInfo().getSupplicantState() == SupplicantState.COMPLETED){
-                isSuplicantCompletedCallback.onSuccess();
                 stopListen();
+                isSuplicantCompletedCallback.onSuccess();
             }
         }
     }

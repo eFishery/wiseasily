@@ -20,6 +20,10 @@ public interface SourceCallback {
         void onAPChanged(List<ScanResult> scanResults);
     }
 
+    interface WisEasilyWifiDisable {
+        void onDisabled();
+    }
+
     interface APFoundCallback {
         void onAPFound();
         void onAPNotFound();
@@ -27,10 +31,5 @@ public interface SourceCallback {
 
     interface SuccessCallback {
         void onSuccess();
-    }
-
-    interface CompleteDataCallback<T> {
-        void onSuccess(T data);
-        void onOutTime();
     }
 }

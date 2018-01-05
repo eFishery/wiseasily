@@ -43,10 +43,10 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction()!=null && intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)){
+            stopListen();
             if(!WifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
                 apFoundCallback.onAPNotFound();
             }else {
-                stopListen();
                 apFoundCallback.onAPFound();
             }
         }

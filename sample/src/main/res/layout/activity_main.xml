@@ -14,22 +14,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"/>
 
-    <Button
-        android:id="@+id/connectWifi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="connect"
-        android:layout_below="@+id/ssid"
-        android:layout_centerInParent="true"/>
-
-    <Button
-        android:id="@+id/scanWifis"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="scan"
-        android:layout_below="@+id/connectWifi"
-        android:layout_centerInParent="true"/>
-
     <EditText
         android:id="@+id/ssid"
         android:layout_width="wrap_content"
@@ -38,6 +22,38 @@
         android:inputType="textPersonName"
         android:hint="ssid"
         android:text="efishery_0001C"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/process"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ssid"
+        android:layout_centerInParent="true"/>
+
+
+    <Button
+        android:id="@+id/connectWifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="connect"
+        android:layout_below="@+id/process"
+        android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/scanWifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="scan Wifi"
+        android:layout_below="@+id/connectWifi"
+        android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/scanWifiSignal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="scan Signal"
+        android:layout_below="@+id/scanWifi"
         android:layout_centerInParent="true"/>
 
 </RelativeLayout>

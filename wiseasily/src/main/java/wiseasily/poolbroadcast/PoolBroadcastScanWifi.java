@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import wiseasily.source.SourceCallback;
@@ -16,44 +17,79 @@ import wiseasily.source.SourceCallback;
 
 public class PoolBroadcastScanWifi extends BroadcastReceiver  {
 
+    private static final int INTERVAL_IMMEDIATE = 0;
+    private long mLastScanTime;
+
     private final Context mContext;
     private final WifiManager mWifiManager;
     private SourceCallback.WisEasilyScanCallback scanCallback;
+    private int mScanInterval; //millis
+
+    private Handler mScanHandler = new Handler();
+    private Runnable mScanRunnable = this::initScan;
+
+    public PoolBroadcastScanWifi(Context mContext, int mScanInterval, SourceCallback.WisEasilyScanCallback scanCallback) {
+        this.mContext = mContext;
+        this.mScanInterval = mScanInterval;
+        this.scanCallback = scanCallback;
+        mWifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+    }
 
     public PoolBroadcastScanWifi(@NonNull Context context, @NonNull SourceCallback.WisEasilyScanCallback callback) {
-        this.mContext = context;
-        this.scanCallback = callback;
-        mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        this(context, INTERVAL_IMMEDIATE, callback);
     }
 
     public void startScanning(boolean getInstantResult){
         if (mWifiManager != null) {
-            reScan();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
             intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
             intentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
             mContext.registerReceiver(this, intentFilter);
+            scan();
+            mLastScanTime = System.currentTimeMillis();
             if(getInstantResult){
                 scanCallback.onAPChanged(mWifiManager.getScanResults());
             }
         }
     }
 
+    private void initScan() {
+        long scanTime = System.currentTimeMillis();
+
+        long scanDelay = scanTime - mLastScanTime;
+        //Log.d(TAG, "scan delay: " + scanDelay);
+        if (mScanInterval == INTERVAL_IMMEDIATE || scanDelay >= mScanInterval) {
+            scan();
+            mLastScanTime = scanTime;
+        } else {
+            mScanHandler.removeCallbacks(mScanRunnable);
+            mScanHandler.postDelayed(mScanRunnable, mScanInterval - scanDelay);
+        }
+    }
+
     public void stopScanning(){
+        mScanHandler.removeCallbacks(mScanRunnable);
         mContext.unregisterReceiver(this);
+    }
+
+    public void changeScanInterval(int scanInterval) {
+        if (scanInterval < 0) {
+            throw new IllegalArgumentException("mScanInterval cannot be negative");
+        }
+        mScanInterval = scanInterval;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction()!=null && (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) || intent.getAction().equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION) || intent.getAction().equals(WifiManager.RSSI_CHANGED_ACTION))){
+            initScan();
             scanCallback.onAPChanged(mWifiManager.getScanResults());
-            reScan();
 
         }
     }
 
-    private void reScan() {
+    private void scan() {
         mWifiManager.setWifiEnabled(true);
         mWifiManager.startScan();
     }

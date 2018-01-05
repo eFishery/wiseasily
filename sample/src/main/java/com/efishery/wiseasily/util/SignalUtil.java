@@ -1,4 +1,4 @@
-package com.efishery.wiseasily;
+package com.efishery.wiseasily.util;
 
 import android.net.wifi.WifiManager;
 
