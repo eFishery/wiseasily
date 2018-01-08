@@ -1,4 +1,4 @@
-[![Release](https://jitpack.io/v/putrabangga/wiseasily.svg)](https://jitpack.io/#eFishery/wifi-module-android)
+[![RELEASE](https://jitpack.io/v/eFishery/wiseasily.svg)](https://jitpack.io/#eFishery/wiseasily)
 
 WisEasily
 ========
@@ -27,7 +27,7 @@ Grab via Maven:
 <dependency>
   <groupId>com.github.eFishery</groupId>
   <artifactId>wiseasily</artifactId>
-  <version>v0.1.1-beta</version>
+  <version>v0.1.3-beta</version>
 </dependency>
 ```
 or Gradle:
@@ -43,7 +43,7 @@ allprojects {
 2. Add the dependency
 ```groovy
 dependencies {
-    compile 'com.github.eFishery:wifi-wiseasily:v0.1.1-beta'
+    compile 'com.github.eFishery:wifi-wiseasily:v0.1.3-beta'
 }
 ```
 
@@ -53,25 +53,26 @@ Usage Sample
 Connect to wifi with ssid name : efishery_2017
 
 ```java
-new WisEasily(this).connect("efishery_2017", new SourceCallback.WisEasilyCallback() {
-   @Override
-      public void onSuccess() {
-   
-      }
-   
-      @Override
-      public void onError(String errorMessage) {
-   
-      }
-   });
+new WisEasily(this).connect("efishery_0001C", new SourceCallback.WisEasilyCallback() {
+    @Override
+    public void onSuccess() {
+        
+    }
+
+    @Override
+    public void onError(String s) {
+
+    }
+});
 ```
 
 Scan Wifi
 
 ```java
+
 @Override
-protected void onStart() {
-    super.onStart();
+protected void onResume() {
+    super.onResume();
     new WisEasily(this).scan(this);
 }
 @Override
@@ -99,5 +100,5 @@ License
     limitations under the License.
 
 
- [1]: http://wiki.efishery.com/kb/wiseasily/
+ [1]: http://wiki.efishery.com/kb/5a4f47ea46c64f25ba36cee9
  [2]: https://drive.google.com/open?id=1LeuABggbQJqk5itoM6Gv1Q2zgqvm84Am
