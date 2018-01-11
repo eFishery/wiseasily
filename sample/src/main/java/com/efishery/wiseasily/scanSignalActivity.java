@@ -38,7 +38,7 @@ public class scanSignalActivity extends AppCompatActivity implements SourceCallb
         listView.setAdapter(adapter);
 
         Set<String> ssidsInclude = new HashSet<>();
-        ssidsInclude.add("efishery_00031");
+        ssidsInclude.add("efishery_00052");
         scanFilter = new ScanFilter(null, null, ssidsInclude, null, null, null);
         adapter.replaceData(getScanResultsFilter(ScanService.getScanResults()));
         wisEasily = new WisEasily(this);

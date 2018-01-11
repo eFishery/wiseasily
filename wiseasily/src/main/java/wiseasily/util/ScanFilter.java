@@ -62,7 +62,7 @@ public class ScanFilter {
             this.includeSsids = ssidsAssign;
         }
 
-        if(this.excludeSsids !=null){
+        if(excludeSsids !=null){
             Set<String> ssidsExclude = new HashSet<>();
             for(String id : excludeSsids){
                 ssidsExclude.add(id.toLowerCase());
@@ -73,7 +73,7 @@ public class ScanFilter {
     }
 
     public boolean matchesStart(ScanResult scanResult) {
-        return scanResult != null && (mac == null || scanResult.BSSID.toLowerCase().startsWith(mac)) && (ssid == null || scanResult.SSID.toLowerCase().startsWith(ssid)) && (includeSsids == null || includeSsids.isEmpty() || includeSsids.contains(scanResult.SSID.toLowerCase())) && (excludeSsids == null || excludeSsids.isEmpty() || excludeSsids.contains(scanResult.SSID.toLowerCase())) && (channels == null || channels.isEmpty() || channels.contains(WifiUtils.toChannel(scanResult.frequency))) && (proximity == null || proximity == ProximityUtils.getProximity(scanResult.level, scanResult.frequency));
+        return scanResult != null && !(mac != null && !scanResult.BSSID.toLowerCase().startsWith(mac)) && !(ssid != null && !scanResult.SSID.toLowerCase().startsWith(ssid)) && !(includeSsids != null && !includeSsids.isEmpty() && !includeSsids.contains(scanResult.SSID.toLowerCase())) && !(excludeSsids != null && !excludeSsids.isEmpty() && excludeSsids.contains(scanResult.SSID.toLowerCase())) && !(channels != null && !channels.contains(WifiUtils.toChannel(scanResult.frequency))) && !(proximity != null && proximity != ProximityUtils.getProximity(scanResult.level, scanResult.frequency));
 
     }
 }
