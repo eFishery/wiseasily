@@ -1,14 +1,7 @@
-##### Bug Fix
+* Handle if includeSsids empty
 * Handle if channel empty
 * Handle if excludeSsids
-
-
-#### 0.1.5-beta (2018-01-11)
-##### Bug Fix
-* Handle if includeSsids empty
-
-
-#### 0.1.4-beta (2018-01-11)
+#### 0.1.7-beta (2018-01-11)
 ##### Features
 * Seperate PoolBroadcast into each Filter
 * Seperate between connect and scan
