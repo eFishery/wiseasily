@@ -27,7 +27,7 @@ Grab via Maven:
 <dependency>
   <groupId>com.github.eFishery</groupId>
   <artifactId>wiseasily</artifactId>
-  <version>v0.1.3-beta</version>
+  <version>v0.1.4-beta</version>
 </dependency>
 ```
 or Gradle:
@@ -43,7 +43,7 @@ allprojects {
 2. Add the dependency
 ```groovy
 dependencies {
-    compile 'com.github.eFishery:wifi-wiseasily:v0.1.3-beta'
+    compile 'com.github.eFishery:wifi-wiseasily:v0.1.4-beta'
 }
 ```
 

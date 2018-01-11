@@ -64,7 +64,7 @@ public class ScanFilter {
     }
 
     public boolean matchesStart(ScanResult scanResult) {
-        return scanResult != null && !(mac != null && !scanResult.BSSID.toLowerCase().startsWith(mac)) && !(ssid != null && !scanResult.SSID.toLowerCase().startsWith(ssid)) && !(ssids != null && !ssids.contains(scanResult.SSID.toLowerCase())) && !(channels != null && !channels.contains(WifiUtils.toChannel(scanResult.frequency))) && !(proximity != null && proximity != ProximityUtils.getProximity(scanResult.level, scanResult.frequency));
+        return scanResult != null && (mac == null || scanResult.BSSID.toLowerCase().startsWith(mac)) && (ssid == null || scanResult.SSID.toLowerCase().startsWith(ssid)) && (ssids == null || ssids.isEmpty() || ssids.contains(scanResult.SSID.toLowerCase())) && (channels == null || channels.contains(WifiUtils.toChannel(scanResult.frequency))) && (proximity == null || proximity == ProximityUtils.getProximity(scanResult.level, scanResult.frequency));
 
     }
 }

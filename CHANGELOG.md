@@ -1,3 +1,8 @@
+##### Bug Fix
+* Handle if ssids empty
+
+
+#### 0.1.4-beta (2018-01-11)
 ##### Features
 * Seperate PoolBroadcast into each Filter
 * Seperate between connect and scan
