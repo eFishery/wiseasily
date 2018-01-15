@@ -35,4 +35,5 @@ buildscript {
 }
 
 dependencies {
+    compile 'com.android.support:support-annotations:24.2.0'
 }
