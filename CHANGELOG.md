@@ -1,5 +1,4 @@
-* Downgrade gradle
-#### 0.1.7.1-beta (2018-01-12)
+#### 0.1.7.7-beta (2018-01-16)
 * Handle if includeSsids empty
 * Handle if channel empty
 * Handle if excludeSsids
