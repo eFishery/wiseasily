@@ -26,7 +26,12 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
     private int mScanInterval; //millis
 
     private Handler mScanHandler = new Handler();
-    private Runnable mScanRunnable = this::initScan;
+    private Runnable mScanRunnable = new Runnable() {
+        @Override
+        public void run() {
+            initScan();
+        }
+    };
 
     public PoolBroadcastScanWifi(Context mContext, int mScanInterval, SourceCallback.WisEasilyScanCallback scanCallback) {
         this.mContext = mContext;

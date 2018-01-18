@@ -27,7 +27,7 @@ Grab via Maven:
 <dependency>
   <groupId>com.github.eFishery</groupId>
   <artifactId>wiseasily</artifactId>
-  <version>v0.1.7.7-beta</version>
+  <version>v0.1.7.9-beta</version>
 </dependency>
 ```
 or Gradle:
@@ -43,17 +43,17 @@ allprojects {
 2. Add the dependency
 ```groovy
 dependencies {
-    compile 'com.github.eFishery:wifi-wiseasily:v0.1.7.7-beta'
+    compile 'com.github.eFishery:wifi-wiseasily:v0.1.7.9-beta'
 }
 ```
 
 Usage Sample
 --------
 
-Connect to wifi with ssid name : efishery_2017
+Connect to wifi with ssid name : efishery_2018
 
 ```java
-new WisEasily(this).connect("efishery_0001C", new SourceCallback.WisEasilyCallback() {
+new WisEasily(this).connect("efishery_2018", new SourceCallback.WisEasilyCallback() {
     @Override
     public void onSuccess() {
         

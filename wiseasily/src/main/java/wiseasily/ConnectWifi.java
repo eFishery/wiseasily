@@ -26,15 +26,28 @@ class ConnectWifi {
 
     void start(@NonNull String ssid,@NonNull final SourceCallback.WisEasilyCallback callback) {
         Handler mListenHandler = new Handler();
-        Runnable mOutOfTime = () -> callback.onError("Out Of Time");
+        Runnable mOutOfTime = new Runnable() {
+            @Override
+            public void run() {
+                callback.onError("Out Of Time");
+            }
+        };
         mListenHandler.postDelayed(mOutOfTime, 30000);
         new PoolBroadcastAPFound(mContext, ssid, new SourceCallback.APFoundCallback() {
             @Override
             public void onAPFound() {
-                new PoolBroadcastAPEnabled(mContext, ssid, () -> new PoolBroadcastWifiConnected(mContext, ssid, () -> {
-                    mListenHandler.removeCallbacks(mOutOfTime);
-                    callback.onSuccess();
-                }));
+                new PoolBroadcastAPEnabled(mContext, ssid, new SourceCallback.SuccessCallback() {
+                    @Override
+                    public void onSuccess() {
+                        new PoolBroadcastWifiConnected(mContext, ssid, new SourceCallback.SuccessCallback() {
+                            @Override
+                            public void onSuccess() {
+                                mListenHandler.removeCallbacks(mOutOfTime);
+                                callback.onSuccess();
+                            }
+                        });
+                    }
+                });
             }
 
             @Override
