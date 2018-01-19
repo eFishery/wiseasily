@@ -14,6 +14,15 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"/>
 
+    <TextView
+        android:id="@+id/pool"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ssid"
+        android:layout_below="@id/switchWifi"
+        android:maxLines = "9"
+        android:scrollbars = "vertical"/>
+
     <EditText
         android:id="@+id/ssid"
         android:layout_width="wrap_content"
@@ -54,6 +63,14 @@
         android:layout_height="wrap_content"
         android:text="scan Signal"
         android:layout_below="@+id/scanWifi"
+        android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="clear"
+        android:layout_below="@+id/scanWifiSignal"
         android:layout_centerInParent="true"/>
 
 </RelativeLayout>

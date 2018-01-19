@@ -3,6 +3,7 @@ package com.efishery.wiseasily;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -11,7 +12,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.efishery.putrabangga.wifi.R;
-import com.efishery.wiseasily.servicelisten.ScanService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,7 +20,7 @@ import butterknife.OnClick;
 import wiseasily.WisEasily;
 import wiseasily.source.SourceCallback;
 
-public class MainActivity extends AppCompatActivity implements SourceCallback.SuccessCallback {
+public class MainActivity extends AppCompatActivity implements SourceCallback.SuccessCallback, PoolBroadcastFail.messageCallback {
 
 
     @BindView(R.id.switchWifi)
@@ -31,7 +31,10 @@ public class MainActivity extends AppCompatActivity implements SourceCallback.Su
     EditText ssid;
     @BindView(R.id.process)
     TextView process;
+    @BindView(R.id.pool)
+    TextView pool;
     private WisEasily wisEasily;
+    String message = "";
 
     @OnCheckedChanged(R.id.switchWifi)
     void onGenderSelected(CompoundButton button, final boolean checked) {
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements SourceCallback.Su
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        pool.setMovementMethod(new ScrollingMovementMethod());
         wisEasily = new WisEasily(this);
         switchWifi.setChecked(wisEasily.isWifiEnable());
     }
@@ -82,11 +86,24 @@ public class MainActivity extends AppCompatActivity implements SourceCallback.Su
         super.onResume();
         Log.d("MainActivity", "onResume");
         wisEasily.enable(false, this);
+        new PoolBroadcastFail(this, this);
     }
 
     @Override
     public void onSuccess() {
         Log.d("MainActivity", "onSuccess TurnOff");
         process.setText("WIfi Turn Off");
+    }
+
+    @Override
+    public void message(String s) {
+        message = message + s + "\n";
+        pool.setText(message);
+    }
+
+    @OnClick(R.id.clear)
+    public void onViewClicked() {
+        message = "";
+        pool.setText(message);
     }
 }
