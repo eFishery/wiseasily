@@ -2,12 +2,12 @@ package wiseasily;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
-import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
-import wiseasily.poolbroadcast.PoolBroadcastWifiConnected;
-import wiseasily.poolbroadcast.PoolBroadcastAPFound;
 import wiseasily.poolbroadcast.PoolBroadcastAPEnabled;
+import wiseasily.poolbroadcast.PoolBroadcastAPFound;
+import wiseasily.poolbroadcast.PoolBroadcastWifiConnected;
 import wiseasily.source.SourceCallback;
 
 /**
@@ -25,35 +25,51 @@ class ConnectWifi {
     }
 
     void start(@NonNull String ssid,@NonNull final SourceCallback.WisEasilyCallback callback) {
-        Handler mListenHandler = new Handler();
-        Runnable mOutOfTime = new Runnable() {
-            @Override
-            public void run() {
-                callback.onError("Out Of Time");
-            }
-        };
-        mListenHandler.postDelayed(mOutOfTime, 30000);
-        new PoolBroadcastAPFound(mContext, ssid, new SourceCallback.APFoundCallback() {
+        PoolBroadcastAPFound poolBroadcastAPFound = new PoolBroadcastAPFound(mContext, ssid);
+        poolBroadcastAPFound.startListen(new SourceCallback.APFoundCallback() {
             @Override
             public void onAPFound() {
-                new PoolBroadcastAPEnabled(mContext, ssid, new SourceCallback.SuccessCallback() {
+                Log.d("Connect Wifi", "onAPFound");
+                PoolBroadcastAPEnabled poolBroadcastAPEnabled = new PoolBroadcastAPEnabled(mContext, ssid);
+                poolBroadcastAPEnabled.startListen(new SourceCallback.ConnectCallback() {
                     @Override
                     public void onSuccess() {
-                        new PoolBroadcastWifiConnected(mContext, ssid, new SourceCallback.SuccessCallback() {
+                        Log.d("Connect Wifi", "poolBroadcastAPEnabled");
+                        PoolBroadcastWifiConnected poolBroadcastWifiConnected = new PoolBroadcastWifiConnected(mContext, ssid);
+                        Log.d("Connect Wifi", "poolBroadcastWifiConnected");
+                        poolBroadcastWifiConnected.startListen(new SourceCallback.ConnectCallback() {
                             @Override
                             public void onSuccess() {
-                                mListenHandler.removeCallbacks(mOutOfTime);
+                                Log.d("Connect Wifi", "poolBroadcastWifiConnected");
                                 callback.onSuccess();
                             }
+
+                            @Override
+                            public void onFail() {
+                                Log.d("Connect Wifi", "BroadcastWifiConnected onFail");
+                                callback.onError("Can Not Connect To Wifi");
+                            }
                         });
+                    }
+
+                    @Override
+                    public void onFail() {
+                        Log.d("Connect Wifi", "BroadcastAPEnabled onFail");
+                        callback.onError("Can Not Connect To Wifi");
                     }
                 });
             }
 
             @Override
             public void onAPNotFound() {
-                mListenHandler.removeCallbacks(mOutOfTime);
+                Log.d("Connect Wifi", "BroadcastAPFound onAPNotFound");
                 callback.onError("Not Found Wifi");
+            }
+
+            @Override
+            public void onFail() {
+                Log.d("Connect Wifi", "BroadcastAPFound onFail");
+                callback.onError("Can Not Connect To Wifi");
             }
         });
     }

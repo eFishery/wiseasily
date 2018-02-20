@@ -4,12 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 
+import com.efishery.putrabangga.wiseasily.BuildConfig;
+
 import wiseasily.source.SourceCallback;
-import wiseasily.util.WifiUtil;
 
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
@@ -28,7 +28,15 @@ public class PoolWifiDisabled extends BroadcastReceiver  {
     }
 
     private void stopListen(){
-        mContext.unregisterReceiver(this);
+        try  {
+            mContext.unregisterReceiver(this);
+        }
+        catch (IllegalArgumentException e) {
+            // Check wether we are in debug mode
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

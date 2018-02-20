@@ -8,6 +8,8 @@ import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import com.efishery.putrabangga.wiseasily.BuildConfig;
+
 import wiseasily.source.SourceCallback;
 
 /**
@@ -74,8 +76,16 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
     }
 
     public void stopScanning(){
-        mScanHandler.removeCallbacks(mScanRunnable);
-        mContext.unregisterReceiver(this);
+        try  {
+            mScanHandler.removeCallbacks(mScanRunnable);
+            mContext.unregisterReceiver(this);
+        }
+        catch (IllegalArgumentException e) {
+            // Check wether we are in debug mode
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void changeScanInterval(int scanInterval) {
