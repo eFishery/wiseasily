@@ -27,9 +27,15 @@ public interface SourceCallback {
     interface APFoundCallback {
         void onAPFound();
         void onAPNotFound();
+        void onFail();
     }
 
     interface SuccessCallback {
         void onSuccess();
+    }
+
+    interface ConnectCallback {
+        void onSuccess();
+        void onFail();
     }
 }

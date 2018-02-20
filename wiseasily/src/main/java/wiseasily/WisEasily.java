@@ -1,13 +1,28 @@
 package wiseasily;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
+import android.support.v4.app.ActivityCompat;
+
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.SettingsClient;
 
 import java.util.List;
+
 import wiseasily.source.SourceCallback;
 import wiseasily.util.ScanFilter;
+
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 
 /**
@@ -23,18 +38,21 @@ public class WisEasily {
     private final ScanWifi scanWifi;
     private final WifiDisabled wifiDisabled;
     private final WifiManager mWifiManager;
+    private final Context context;
 
     public WisEasily(@NonNull Context context) {
         wifiDisabled = new WifiDisabled(context);
         connectWifi = new ConnectWifi(context);
         scanWifi = new ScanWifi(context);
+        this.context = context;
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
 
-    public void connect(@NonNull String ssid,@NonNull final SourceCallback.WisEasilyCallback callback) {
-        if(ssid.isEmpty()){
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_NETWORK_STATE, Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET})
+    public void connect(@NonNull String ssid, @NonNull final SourceCallback.WisEasilyCallback callback) {
+        if (ssid.isEmpty()) {
             callback.onError("SSID Cannot be Empty");
-        }else {
+        } else {
             connectWifi.start(ssid, callback);
         }
     }
@@ -43,6 +61,7 @@ public class WisEasily {
         return mWifiManager.getScanResults();
     }
 
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_NETWORK_STATE, Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION})
     public void scan(@NonNull SourceCallback.WisEasilyScanCallback callback) {
         scanWifi.start(callback);
     }

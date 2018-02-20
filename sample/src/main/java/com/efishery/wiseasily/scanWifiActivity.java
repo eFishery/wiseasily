@@ -14,13 +14,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import wiseasily.WisEasily;
 import wiseasily.source.SourceCallback;
-import wiseasily.util.ScanFilter;
 
 public class scanWifiActivity extends AppCompatActivity implements SourceCallback.SuccessCallback {
 

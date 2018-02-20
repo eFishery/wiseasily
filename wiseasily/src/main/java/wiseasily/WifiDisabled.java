@@ -1,13 +1,8 @@
 package wiseasily;
 
 import android.content.Context;
-import android.net.wifi.WifiManager;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 
-import wiseasily.poolbroadcast.PoolBroadcastAPEnabled;
-import wiseasily.poolbroadcast.PoolBroadcastAPFound;
-import wiseasily.poolbroadcast.PoolBroadcastWifiConnected;
 import wiseasily.poolbroadcast.PoolWifiDisabled;
 import wiseasily.source.SourceCallback;
 
