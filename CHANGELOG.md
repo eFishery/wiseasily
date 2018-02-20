@@ -1,3 +1,6 @@
+#### 0.1.8.1-beta (2018-01-16)
+* Handle Android M equal above
+* Makes responsive when AP off or Device long to connect
 #### 0.1.7.7-beta (2018-01-16)
 * Handle if includeSsids empty
 * Handle if channel empty
