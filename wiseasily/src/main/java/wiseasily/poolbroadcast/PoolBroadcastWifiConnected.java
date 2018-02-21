@@ -33,6 +33,7 @@ public class PoolBroadcastWifiConnected {
     private final Runnable mOutOfTime = new Runnable() {
         @Override
         public void run() {
+            stopListenAll();
             if (mConnectivityManager != null) {
                 NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
                 if (activeNetwork != null) {
@@ -131,11 +132,12 @@ public class PoolBroadcastWifiConnected {
             NetworkRequest.Builder request = new NetworkRequest.Builder();
             request.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
             if (mConnectivityManager != null) {
-                mHandler.postDelayed(mOutOfTime, 5000);
+                mHandler.postDelayed(mOutOfTime, 3500);
                 mConnectivityManager.registerNetworkCallback(request.build(), new ConnectivityManager.NetworkCallback() {
                     @Override
                     public void onAvailable(Network network) {
                         Log.d("Connect Wifi", "Network onAvailable");
+                        mHandler.removeCallbacks(mOutOfTime);
                         stopListenAll();
                         boolean successForceConnect;
                         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
