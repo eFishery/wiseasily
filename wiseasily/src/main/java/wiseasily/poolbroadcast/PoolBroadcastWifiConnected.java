@@ -30,6 +30,31 @@ public class PoolBroadcastWifiConnected {
     private final PoolBroadcastSuplicantOff poolBroadcastSuplicantOff;
     private Handler mHandler;
 
+    private final Runnable mOutOfTime = new Runnable() {
+        @Override
+        public void run() {
+            if (mConnectivityManager != null) {
+                NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
+                if (activeNetwork != null) {
+                    Log.d("Connect Wifi","Active Network " + activeNetwork.toString());
+                    if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI){
+                        if(activeNetwork.getExtraInfo().equals(WifiUtil.getConfigFormatSSID(ssid))){
+                            isConnectivityAction.onSuccess();
+                        }else {
+                            isConnectivityAction.onFail();
+                        }
+                    }else {
+                        isConnectivityAction.onFail();
+                    }
+                }else {
+                    isConnectivityAction.onFail();
+                }
+            }else {
+                isConnectivityAction.onFail();
+            }
+        }
+    };
+
     public PoolBroadcastWifiConnected(@NonNull Context context, @NonNull String ssid) {
         this.mContext = context;
         this.ssid = ssid;
@@ -37,6 +62,7 @@ public class PoolBroadcastWifiConnected {
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
         poolBroadcastSuplicantOff = new PoolBroadcastSuplicantOff(mContext);
         mHandler = new Handler();
+
     }
 
     public void startListen(@NonNull SourceCallback.ConnectCallback callback){
@@ -105,6 +131,7 @@ public class PoolBroadcastWifiConnected {
             NetworkRequest.Builder request = new NetworkRequest.Builder();
             request.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
             if (mConnectivityManager != null) {
+                mHandler.postDelayed(mOutOfTime, 5000);
                 mConnectivityManager.registerNetworkCallback(request.build(), new ConnectivityManager.NetworkCallback() {
                     @Override
                     public void onAvailable(Network network) {
