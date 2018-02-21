@@ -2,27 +2,16 @@ package wiseasily;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
-import android.support.v4.app.ActivityCompat;
-
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.SettingsClient;
 
 import java.util.List;
 
 import wiseasily.source.SourceCallback;
 import wiseasily.util.ScanFilter;
-
-import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 
 /**
