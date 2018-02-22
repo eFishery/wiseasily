@@ -7,13 +7,16 @@ import android.net.wifi.WifiManager;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
+import android.util.Log;
 
 import java.util.List;
 
+import wiseasily.poolbroadcast.PoolBroadcastWifiConnected;
 import wiseasily.source.SourceCallback;
 import wiseasily.util.ScanFilter;
 
 import static wiseasily.util.ConnectivityUtil.isConnectedToAP;
+import static wiseasily.util.WifiUtil.isWifiConnectedToAP;
 
 
 /**
@@ -47,7 +50,25 @@ public class WisEasily {
             if(isConnectedToAP(ssid, context)){
                 callback.onSuccess();
             }else {
-                connectWifi.start(ssid, callback);
+                if(isWifiConnectedToAP(ssid, context)){
+                    PoolBroadcastWifiConnected poolBroadcastWifiConnected = new PoolBroadcastWifiConnected(context, ssid);
+                    Log.d("Connect Wifi", "poolBroadcastWifiConnected");
+                    poolBroadcastWifiConnected.startListen(new SourceCallback.ConnectCallback() {
+                        @Override
+                        public void onSuccess() {
+                            Log.d("Connect Wifi", "poolBroadcastWifiConnected");
+                            callback.onSuccess();
+                        }
+
+                        @Override
+                        public void onFail() {
+                            Log.d("Connect Wifi", "BroadcastWifiConnected onFail");
+                            callback.onError("Can Not Connect To Wifi");
+                        }
+                    });
+                }else {
+                    connectWifi.start(ssid, callback);
+                }
             }
         }
     }

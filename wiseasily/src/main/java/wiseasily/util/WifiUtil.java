@@ -1,9 +1,13 @@
 package wiseasily.util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.List;
 
@@ -65,5 +69,21 @@ public class WifiUtil {
 
     public static String getConfigFormatSSID(String ssid){
         return  "\""+ ssid +"\"";
+    }
+
+
+    public static boolean isWifiConnectedToAP(String APSsid, Context context){
+        WifiManager mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if(mWifiManager!=null){
+            String ssidCurrent = mWifiManager.getConnectionInfo().getSSID();
+            if(ssidCurrent!=null){
+                Log.d("Connect Wifi","Active Network " + ssidCurrent);
+                return getConfigFormatSSID(APSsid).equals(ssidCurrent);
+            }else {
+                return false;
+            }
+        }else {
+            return false;
+        }
     }
 }
