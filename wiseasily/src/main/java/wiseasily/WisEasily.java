@@ -13,6 +13,8 @@ import java.util.List;
 import wiseasily.source.SourceCallback;
 import wiseasily.util.ScanFilter;
 
+import static wiseasily.util.ConnectivityUtil.isConnectedToAP;
+
 
 /**
  * Bismillahirrahmanirrahim
@@ -42,7 +44,11 @@ public class WisEasily {
         if (ssid.isEmpty()) {
             callback.onError("SSID Cannot be Empty");
         } else {
-            connectWifi.start(ssid, callback);
+            if(isConnectedToAP(ssid, context)){
+                callback.onSuccess();
+            }else {
+                connectWifi.start(ssid, callback);
+            }
         }
     }
 
