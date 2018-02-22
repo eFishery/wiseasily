@@ -87,7 +87,8 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
             Log.d("Connect Wifi", "Pool AP Found "+ mWifiManager.getScanResults().toString());
             if(!WifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
                 count++;
-                if(count>2){
+                if(count>3){
+                    count=0;
                     apFoundCallback.onAPNotFound();
                 }else {
                     mHandler.postDelayed(mOutOfTime, 3000);
