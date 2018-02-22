@@ -91,7 +91,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
                     count=0;
                     apFoundCallback.onAPNotFound();
                 }else {
-                    mHandler.postDelayed(mOutOfTime, 3000);
+                    mHandler.postDelayed(mOutOfTime, 7000);
                 }
             }else {
                 apFoundCallback.onAPFound();
