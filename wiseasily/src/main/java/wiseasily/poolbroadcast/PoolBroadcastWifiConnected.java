@@ -1,6 +1,9 @@
 package wiseasily.poolbroadcast;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -11,6 +14,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.efishery.putrabangga.wiseasily.BuildConfig;
+
 import wiseasily.source.SourceCallback;
 import wiseasily.util.WifiUtil;
 
@@ -20,7 +25,7 @@ import wiseasily.util.WifiUtil;
  */
 
 
-public class PoolBroadcastWifiConnected {
+public class PoolBroadcastWifiConnected extends BroadcastReceiver {
 
     private final Context mContext;
     private final ConnectivityManager mConnectivityManager;
@@ -29,32 +34,17 @@ public class PoolBroadcastWifiConnected {
     private final PoolBroadcastWifiOff poolBroadcastWifiOff;
     private final PoolBroadcastSuplicantOff poolBroadcastSuplicantOff;
     private Handler mHandler;
+    boolean successForceConnect = true;
+    private boolean hasbeenForceConnect = false;
 
     private final Runnable mOutOfTime = new Runnable() {
         @Override
         public void run() {
-            stopListenAll();
-            if (mConnectivityManager != null) {
-                NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
-                if (activeNetwork != null) {
-                    Log.d("Connect Wifi","Active Network " + activeNetwork.toString());
-                    if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI){
-                        if(activeNetwork.getExtraInfo().equals(WifiUtil.getConfigFormatSSID(ssid))){
-                            isConnectivityAction.onSuccess();
-                        }else {
-                            isConnectivityAction.onFail();
-                        }
-                    }else {
-                        isConnectivityAction.onFail();
-                    }
-                }else {
-                    isConnectivityAction.onFail();
-                }
-            }else {
-                isConnectivityAction.onFail();
-            }
+            hasbeenForceConnect = true;
+            callbackWifiConnected();
         }
     };
+    private int count=0;
 
     public PoolBroadcastWifiConnected(@NonNull Context context, @NonNull String ssid) {
         this.mContext = context;
@@ -63,6 +53,7 @@ public class PoolBroadcastWifiConnected {
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
         poolBroadcastSuplicantOff = new PoolBroadcastSuplicantOff(mContext);
         mHandler = new Handler();
+        mContext.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
     }
 
@@ -85,34 +76,54 @@ public class PoolBroadcastWifiConnected {
         });
         forceToUseWifiWithoutInternet();
     }
-//
-//    public void stopListen(){
-//        try  {
-//            mContext.unregisterReceiver(this);
-//        }
-//        catch (IllegalArgumentException e) {
-//            // Check wether we are in debug mode
-//            if (BuildConfig.DEBUG) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onReceive(Context context, Intent intent) {
-//        if(intent.getAction()!=null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)){
-//            NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
-//            if(activeNetwork!=null){
-//                Log.d("Connect Wifi","Active Network " + activeNetwork.toString());
-//            }
-//            if (activeNetwork != null && activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.getExtraInfo().equals(WifiUtil.getConfigFormatSSID(ssid))) {
-//                stopListenAll();
-//                isConnectivityAction.onSuccess();
-//            }else {
-//                isConnectivityAction.onFail();
-//            }
-//        }
-//    }
+
+    public void stopListen(){
+        try  {
+            mContext.unregisterReceiver(this);
+        }
+        catch (IllegalArgumentException e) {
+            // Check wether we are in debug mode
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if(intent.getAction()!=null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)){
+            if(hasbeenForceConnect){
+                callbackWifiConnected();
+            }
+        }
+    }
+
+    private void callbackWifiConnected() {
+        stopListenAll();
+        mHandler.removeCallbacks(mOutOfTime);
+        if (mConnectivityManager != null && successForceConnect) {
+            NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
+            if (activeNetwork != null) {
+                Log.d("Connect Wifi","Active Network " + activeNetwork.toString());
+                if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI){
+                    if(activeNetwork.getExtraInfo().equals(WifiUtil.getConfigFormatSSID(ssid))){
+                        isConnectivityAction.onSuccess();
+                    }else {
+                        isConnectivityAction.onFail();
+                    }
+                }else {
+                    count++;
+                    if(count>2){
+                        isConnectivityAction.onFail();
+                    }
+                }
+            }else {
+                isConnectivityAction.onFail();
+            }
+        }else {
+            isConnectivityAction.onFail();
+        }
+    }
 
     private void stopListenAll() {
         if(poolBroadcastWifiOff!=null){
@@ -121,7 +132,7 @@ public class PoolBroadcastWifiConnected {
 //        if(poolBroadcastSuplicantOff!=null){
 //            poolBroadcastSuplicantOff.stopListen();
 //        }
-//        stopListen();
+        stopListen();
     }
 
 
@@ -132,63 +143,29 @@ public class PoolBroadcastWifiConnected {
             NetworkRequest.Builder request = new NetworkRequest.Builder();
             request.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
             if (mConnectivityManager != null) {
-                mHandler.postDelayed(mOutOfTime, 3500);
+                mHandler.postDelayed(mOutOfTime, 5000);
                 mConnectivityManager.registerNetworkCallback(request.build(), new ConnectivityManager.NetworkCallback() {
                     @Override
                     public void onAvailable(Network network) {
+                        hasbeenForceConnect = true;
                         Log.d("Connect Wifi", "Network onAvailable");
                         mHandler.removeCallbacks(mOutOfTime);
-                        stopListenAll();
-                        boolean successForceConnect;
                         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
                             successForceConnect = ConnectivityManager.setProcessDefaultNetwork(network);
                             mConnectivityManager.unregisterNetworkCallback(this);
-                            callbackConnManager(successForceConnect);
                         }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                             successForceConnect = mConnectivityManager.bindProcessToNetwork(network);
                             mConnectivityManager.unregisterNetworkCallback(this);
-                            callbackConnManager(successForceConnect);
+                        }else {
+                            successForceConnect = true;
                         }
                     }
                 });
             }else {
-                isConnectivityAction.onFail();
+                successForceConnect = false;
             }
         }else {
-            isConnectivityAction.onSuccess();
-        }
-    }
-
-
-    private void callbackConnManager(boolean successForceConnect) {
-        Log.d("Connect Wifi", "Force to Connect " + String.valueOf(successForceConnect));
-        if(successForceConnect){
-            NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
-            if(activeNetwork!=null){
-                Log.d("Connect Wifi","Active Network " + activeNetwork.toString());
-            }
-            if (activeNetwork != null && activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.getExtraInfo().equals(WifiUtil.getConfigFormatSSID(ssid))) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        isConnectivityAction.onSuccess();
-                    }
-                });
-            }else {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        isConnectivityAction.onFail();
-                    }
-                });
-            }
-        }else {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    isConnectivityAction.onFail();
-                }
-            });
+            successForceConnect = true;
         }
     }
 }

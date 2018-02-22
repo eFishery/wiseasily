@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -25,11 +26,26 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
     private final PoolBroadcastWifiOff poolBroadcastWifiOff;
     private SourceCallback.APFoundCallback apFoundCallback;
     private final WifiManager mWifiManager;
+    private Handler mHandler;
+    private int count = 0;
+    private final Runnable mOutOfTime = new Runnable() {
+        @Override
+        public void run() {
+            mHandler.removeCallbacks(mOutOfTime);
+            if(apFoundCallback!=null){
+                if(!WifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
+                    apFoundCallback.onAPNotFound();
+                }else {
+                    apFoundCallback.onFail();
+                }
+            }
+        }
+    };
 
     public PoolBroadcastAPFound(@NonNull Context context, @NonNull String ssid) {
         this.mContext = context;
         this.ssid = ssid;
-
+        mHandler = new Handler();
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
     }
@@ -48,6 +64,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
                     callback.onFail();
                 }
             });
+            mHandler.postDelayed(mOutOfTime, 3000);
         }
     }
 
@@ -66,9 +83,15 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction()!=null && intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)){
             stopListenAll();
+            mHandler.removeCallbacks(mOutOfTime);
             Log.d("Connect Wifi", "Pool AP Found "+ mWifiManager.getScanResults().toString());
             if(!WifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
-                apFoundCallback.onAPNotFound();
+                count++;
+                if(count>2){
+                    apFoundCallback.onAPNotFound();
+                }else {
+                    mHandler.postDelayed(mOutOfTime, 3000);
+                }
             }else {
                 apFoundCallback.onAPFound();
             }
