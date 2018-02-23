@@ -32,7 +32,6 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
     private final String ssid;
     private SourceCallback.ConnectCallback isConnectivityAction;
     private final PoolBroadcastWifiOff poolBroadcastWifiOff;
-    private final PoolBroadcastSuplicantOff poolBroadcastSuplicantOff;
     private Handler mHandler;
     boolean successForceConnect = true;
     private boolean hasbeenForceConnect = false;
@@ -51,7 +50,6 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
         this.ssid = ssid;
         mConnectivityManager = (ConnectivityManager) mContext.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
-        poolBroadcastSuplicantOff = new PoolBroadcastSuplicantOff(mContext);
         mHandler = new Handler();
         mContext.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 

@@ -35,7 +35,6 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
     private final WifiManager mWifiManager;
     private final String ssid;
     private final PoolBroadcastWifiOff poolBroadcastWifiOff;
-    private final PoolBroadcastSuplicantOff poolBroadcastSuplicantOff;
     private SourceCallback.ConnectCallback isSuplicantCompletedCallback;
     private ListOfStateMachineWifi listOfStateMachineWifi = null;
 
@@ -45,7 +44,6 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
         this.ssid = ssid;
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
-        poolBroadcastSuplicantOff = new PoolBroadcastSuplicantOff(mContext);
     }
 
     public void startListen(@NonNull SourceCallback.ConnectCallback callback){
@@ -128,9 +126,6 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
     private void stopListenAll() {
         if(poolBroadcastWifiOff!=null){
             poolBroadcastWifiOff.stopListen();
-        }
-        if(poolBroadcastSuplicantOff!=null){
-            poolBroadcastSuplicantOff.stopListen();
         }
         stopListen();
     }

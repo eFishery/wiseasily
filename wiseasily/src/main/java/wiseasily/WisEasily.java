@@ -50,7 +50,7 @@ public class WisEasily {
             if(isConnectedToAP(ssid, context)){
                 callback.onSuccess();
             }else {
-                if(isWifiConnectedToAP(ssid, context)){
+                if(isWifiConnectedToAP(ssid, context) && mWifiManager.isWifiEnabled()){
                     PoolBroadcastWifiConnected poolBroadcastWifiConnected = new PoolBroadcastWifiConnected(context, ssid);
                     Log.d("Connect Wifi", "poolBroadcastWifiConnected");
                     poolBroadcastWifiConnected.startListen(new SourceCallback.ConnectCallback() {

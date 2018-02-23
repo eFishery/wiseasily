@@ -20,7 +20,6 @@ public class PoolBroadcastWifiOff extends BroadcastReceiver {
     private final Context mContext;
     private ConnectWifiFail connectWifiFail;
     private final WifiManager mWifiManager;
-    private boolean init = true;
     private boolean canListenWifiOff = false;
 
     public PoolBroadcastWifiOff(@NonNull Context context) {

@@ -15,13 +15,9 @@ public class ConnectivityUtil {
         ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if(mConnectivityManager!=null){
             NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
-            if(activeNetwork!=null){
-                if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI){
-                    Log.d("Connect Wifi","Active Network " + activeNetwork.toString());
-                    return activeNetwork.getExtraInfo().equals(WifiUtil.getConfigFormatSSID(APSsid));
-                }else {
-                    return false;
-                }
+            if(activeNetwork!=null) {
+                Log.d("Connect Wifi", "Active Network " + activeNetwork.toString());
+                return activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.getExtraInfo().equals(WifiUtil.getConfigFormatSSID(APSsid));
             }else {
                 return false;
             }

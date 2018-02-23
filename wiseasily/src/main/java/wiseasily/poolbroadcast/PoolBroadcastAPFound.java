@@ -64,8 +64,12 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
                     callback.onFail();
                 }
             });
-            mHandler.postDelayed(mOutOfTime, 3000);
+            postDelay();
         }
+    }
+
+    private void postDelay() {
+        mHandler.postDelayed(mOutOfTime, 25000);
     }
 
     public void stopListen(){
@@ -91,7 +95,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
                     count=0;
                     apFoundCallback.onAPNotFound();
                 }else {
-                    mHandler.postDelayed(mOutOfTime, 25000);
+                    postDelay();
                 }
             }else {
                 apFoundCallback.onAPFound();
