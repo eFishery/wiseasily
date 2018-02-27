@@ -141,7 +141,7 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
             NetworkRequest.Builder request = new NetworkRequest.Builder();
             request.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
             if (mConnectivityManager != null) {
-                mHandler.postDelayed(mOutOfTime, 5000);
+                mHandler.postDelayed(mOutOfTime, 30000);
                 mConnectivityManager.registerNetworkCallback(request.build(), new ConnectivityManager.NetworkCallback() {
                     @Override
                     public void onAvailable(Network network) {
