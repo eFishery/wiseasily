@@ -40,6 +40,7 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
         @Override
         public void run() {
             hasbeenForceConnect = true;
+            mHandler.removeCallbacks(mOutOfTime);
             callbackWifiConnected();
         }
     };
@@ -58,14 +59,6 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
     public void startListen(@NonNull SourceCallback.ConnectCallback callback){
         this.isConnectivityAction = callback;
         Log.d("Connect Wifi", "Wifi Connected startListen");
-//        mContext.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-//        poolBroadcastSuplicantOff.startListen(new PoolBroadcastSuplicantOff.ConnectWifiFail() {
-//            @Override
-//            public void onSuplicantOff() {
-//                stopListen();
-//                callback.onFail();
-//            }
-//        });
         poolBroadcastWifiOff.startListen(new PoolBroadcastWifiOff.ConnectWifiFail() {
             @Override
             public void onWifiOff() {
@@ -89,16 +82,15 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(intent.getAction()!=null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)){
-            if(hasbeenForceConnect){
-                callbackWifiConnected();
-            }
-        }
+//        if(intent.getAction()!=null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)){
+//            if(hasbeenForceConnect){
+//                callbackWifiConnected();
+//            }
+//        }
     }
 
     private void callbackWifiConnected() {
         stopListenAll();
-        mHandler.removeCallbacks(mOutOfTime);
         if (mConnectivityManager != null && successForceConnect) {
             NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
             if (activeNetwork != null) {
@@ -110,10 +102,7 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
                         isConnectivityAction.onFail();
                     }
                 }else {
-                    count++;
-                    if(count>2){
-                        isConnectivityAction.onFail();
-                    }
+                    isConnectivityAction.onFail();
                 }
             }else {
                 isConnectivityAction.onFail();
@@ -127,9 +116,6 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
         if(poolBroadcastWifiOff!=null){
             poolBroadcastWifiOff.stopListen();
         }
-//        if(poolBroadcastSuplicantOff!=null){
-//            poolBroadcastSuplicantOff.stopListen();
-//        }
         stopListen();
     }
 
@@ -165,5 +151,6 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
         }else {
             successForceConnect = true;
         }
+        callbackWifiConnected();
     }
 }
