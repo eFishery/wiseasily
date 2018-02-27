@@ -90,6 +90,7 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
     }
 
     private void callbackWifiConnected() {
+        Log.d("Connect Wifi", "callbackWifiConnected");
         stopListenAll();
         if (mConnectivityManager != null && successForceConnect) {
             NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
@@ -105,9 +106,11 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
                     isConnectivityAction.onFail();
                 }
             }else {
+                Log.d("Connect Wifi", "activeNetwork null");
                 isConnectivityAction.onFail();
             }
         }else {
+            Log.d("Connect Wifi", "mConnectivityManager null");
             isConnectivityAction.onFail();
         }
     }
