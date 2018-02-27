@@ -48,30 +48,33 @@ public class WisEasily {
             callback.onError("SSID Cannot be Empty");
         } else {
             if(isConnectedToAP(ssid, context)){
-                callback.onSuccess();
+                poolbroadcastWifiConnected(ssid, callback);
             }else {
-                connectWifi.start(ssid, callback);
-//                if(isWifiConnectedToAP(ssid, context) && mWifiManager.isWifiEnabled()){
-//                    PoolBroadcastWifiConnected poolBroadcastWifiConnected = new PoolBroadcastWifiConnected(context, ssid);
-//                    Log.d("Connect Wifi", "poolBroadcastWifiConnected");
-//                    poolBroadcastWifiConnected.startListen(new SourceCallback.ConnectCallback() {
-//                        @Override
-//                        public void onSuccess() {
-//                            Log.d("Connect Wifi", "poolBroadcastWifiConnected");
-//                            callback.onSuccess();
-//                        }
-//
-//                        @Override
-//                        public void onFail() {
-//                            Log.d("Connect Wifi", "BroadcastWifiConnected onFail");
-//                            callback.onError("Can Not Connect To Wifi");
-//                        }
-//                    });
-//                }else {
-//                    connectWifi.start(ssid, callback);
-//                }
+                if(isWifiConnectedToAP(ssid, context) && mWifiManager.isWifiEnabled()){
+                    poolbroadcastWifiConnected(ssid, callback);
+                }else {
+                    connectWifi.start(ssid, callback);
+                }
             }
         }
+    }
+
+    private void poolbroadcastWifiConnected(@NonNull String ssid, @NonNull SourceCallback.WisEasilyCallback callback) {
+        PoolBroadcastWifiConnected poolBroadcastWifiConnected = new PoolBroadcastWifiConnected(context, ssid);
+        Log.d("Connect Wifi", "poolBroadcastWifiConnected");
+        poolBroadcastWifiConnected.startListen(new SourceCallback.ConnectCallback() {
+            @Override
+            public void onSuccess() {
+                Log.d("Connect Wifi", "poolBroadcastWifiConnected");
+                callback.onSuccess();
+            }
+
+            @Override
+            public void onFail() {
+                Log.d("Connect Wifi", "BroadcastWifiConnected onFail");
+                callback.onError("Can Not Connect To Wifi");
+            }
+        });
     }
 
     public List<ScanResult> getWifiResult() {
