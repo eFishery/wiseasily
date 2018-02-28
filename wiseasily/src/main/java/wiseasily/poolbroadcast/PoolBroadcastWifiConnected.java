@@ -146,14 +146,16 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
                         }else {
                             successForceConnect = true;
                         }
+                        callbackWifiConnected();
                     }
                 });
             }else {
                 successForceConnect = false;
+                callbackWifiConnected();
             }
         }else {
             successForceConnect = true;
+            callbackWifiConnected();
         }
-        callbackWifiConnected();
     }
 }
