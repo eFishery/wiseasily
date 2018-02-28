@@ -25,16 +25,15 @@ import wiseasily.util.WifiUtil;
  */
 
 
-public class PoolBroadcastWifiConnected extends BroadcastReceiver {
+public class PoolBroadcastWifiConnected {
 
-    private final Context mContext;
     private final ConnectivityManager mConnectivityManager;
     private final String ssid;
     private SourceCallback.ConnectCallback isConnectivityAction;
     private final PoolBroadcastWifiOff poolBroadcastWifiOff;
-//    private Handler mHandler;
-    boolean successForceConnect = true;
-    private boolean hasbeenForceConnect = false;
+    private Handler mHandler;
+private boolean successForceConnect = true;
+//    private boolean hasbeenForceConnect = false;
 //
 //    private final Runnable mOutOfTime = new Runnable() {
 //        @Override
@@ -47,12 +46,13 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
 //    private int count=0;
 
     public PoolBroadcastWifiConnected(@NonNull Context context, @NonNull String ssid) {
-        this.mContext = context;
+        Context mContext = context;
         this.ssid = ssid;
         mConnectivityManager = (ConnectivityManager) mContext.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
+        mHandler = new Handler(context.getMainLooper());
 //        mHandler = new Handler();
-        mContext.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        mContext.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
     }
 
@@ -68,28 +68,28 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
         forceToUseWifiWithoutInternet();
     }
 
-    public void stopListen(){
-        try  {
-            mContext.unregisterReceiver(this);
-        }
-        catch (IllegalArgumentException e) {
-            // Check wether we are in debug mode
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
-        Log.d("Connect Wifi","Active Network onReceive" + activeNetwork.toString());
-        if(intent.getAction()!=null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)){
-            if(hasbeenForceConnect){
-                callbackWifiConnected();
-            }
-        }
-    }
+//    public void stopListen(){
+//        try  {
+//            mContext.unregisterReceiver(this);
+//        }
+//        catch (IllegalArgumentException e) {
+//            // Check wether we are in debug mode
+//            if (BuildConfig.DEBUG) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void onReceive(Context context, Intent intent) {
+//        NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
+//        Log.d("Connect Wifi","Active Network onReceive" + activeNetwork.toString());
+//        if(intent.getAction()!=null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)){
+//            if(hasbeenForceConnect){
+//                callbackWifiConnected();
+//            }
+//        }
+//    }
 
     private void callbackWifiConnected() {
         Log.d("Connect Wifi", "callbackWifiConnected");
@@ -121,7 +121,7 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
         if(poolBroadcastWifiOff!=null){
             poolBroadcastWifiOff.stopListen();
         }
-        stopListen();
+//        stopListen();
     }
 
 
@@ -136,7 +136,7 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
                 mConnectivityManager.registerNetworkCallback(request.build(), new ConnectivityManager.NetworkCallback() {
                     @Override
                     public void onAvailable(Network network) {
-                        hasbeenForceConnect = true;
+//                        hasbeenForceConnect = true;
                         Log.d("Connect Wifi", "Network onAvailable");
 //                        mHandler.removeCallbacks(mOutOfTime);
                         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
@@ -148,15 +148,27 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver {
                         }else {
                             successForceConnect = true;
                         }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callbackWifiConnected();
+                            }
+                        });
                     }
                 });
             }else {
-                hasbeenForceConnect = true;
+//                hasbeenForceConnect = true;
                 successForceConnect = false;
+                callbackWifiConnected();
             }
         }else {
-            hasbeenForceConnect = true;
+//            hasbeenForceConnect = true;
             successForceConnect = true;
+            callbackWifiConnected();
         }
+    }
+
+    private void runOnUiThread(Runnable r) {
+        mHandler.post(r);
     }
 }
