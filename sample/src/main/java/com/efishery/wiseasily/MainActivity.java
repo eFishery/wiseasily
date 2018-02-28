@@ -63,9 +63,7 @@ public class MainActivity extends AppCompatActivity implements SourceCallback.Su
 
     @OnCheckedChanged(R.id.switchWifi)
     void onGenderSelected(CompoundButton button, final boolean checked) {
-        wisEasily.enable(checked, () -> {
-
-        });
+        boolean success = wisEasily.enableWifi(checked);
     }
 
     @OnClick(R.id.connectWifi)

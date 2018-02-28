@@ -25,4 +25,19 @@ public class ConnectivityUtil {
             return false;
         }
     }
+
+    public static boolean isConnectedToAPContainsChar(String containtChar, Context context){
+        ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(mConnectivityManager!=null){
+            NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
+            if(activeNetwork!=null) {
+                Log.d("Connect Wifi", "Active Network " + activeNetwork.toString());
+                return activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.getExtraInfo().contains(containtChar);
+            }else {
+                return false;
+            }
+        }else {
+            return false;
+        }
+    }
 }

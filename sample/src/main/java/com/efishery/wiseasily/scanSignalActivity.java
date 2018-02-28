@@ -22,7 +22,7 @@ import wiseasily.WisEasily;
 import wiseasily.source.SourceCallback;
 import wiseasily.util.ScanFilter;
 
-public class scanSignalActivity extends AppCompatActivity implements SourceCallback.SuccessCallback {
+public class scanSignalActivity extends AppCompatActivity{
 
     private WifiAdapter adapter;
     private ScanFilter scanFilter;
@@ -47,7 +47,7 @@ public class scanSignalActivity extends AppCompatActivity implements SourceCallb
     @Override
     protected void onResume() {
         super.onResume();
-        wisEasily.enable(true, this);
+        wisEasily.enableWifi(true);
     }
 
     @Override
@@ -70,10 +70,5 @@ public class scanSignalActivity extends AppCompatActivity implements SourceCallb
 
     private List<ScanResult> getScanResultsFilter(List<ScanResult> scanResults) {
         return FilterUtil.filterScanResult(scanFilter, scanResults);
-    }
-
-    @Override
-    public void onSuccess() {
-
     }
 }

@@ -18,6 +18,7 @@ import java.util.List;
 
 public class WifiUtil {
 
+
     public static int getNetId(@NonNull String ssid,@NonNull WifiManager mWifiManager ){
         int netId = getNetIdOfScanResultInWifiConfig(ssid, mWifiManager.getConfiguredNetworks());
         if(netId==-1){
