@@ -87,19 +87,14 @@ public class WifiUtil {
             return false;
         }
     }
-    public static boolean forgetCurrentNetwork(String ssid, Context context){
+    public static boolean forgetCurrentNetwork(Context context){
         WifiManager mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (mWifiManager != null) {
-            List<WifiConfiguration> list = mWifiManager.getConfiguredNetworks();
-            for( WifiConfiguration i : list ) {
-                Log.d("Connect Wifi","Wifi Config " + i.SSID + "configFormat "+ getConfigFormatSSID(ssid));
-                if(i.SSID.equals(getConfigFormatSSID(ssid))){
-                    mWifiManager.removeNetwork(i.networkId);
-                    mWifiManager.saveConfiguration();
-                    return true;
-                }
-            }
+            int networkId = mWifiManager.getConnectionInfo().getNetworkId();
+            mWifiManager.removeNetwork(networkId);
+            return mWifiManager.saveConfiguration();
+        }else {
+            return false;
         }
-        return false;
     }
 }

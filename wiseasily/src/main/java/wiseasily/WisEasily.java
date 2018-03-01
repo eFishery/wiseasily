@@ -95,7 +95,7 @@ public class WisEasily {
         return isConnectedToAPContainsChar(character, context);
     }
 
-    public boolean forgetCurrentSssid(String ssid){
-        return forgetCurrentNetwork(ssid, context);
+    public boolean forgetCurrentSssid(){
+        return forgetCurrentNetwork(context);
     }
 }
