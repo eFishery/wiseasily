@@ -17,7 +17,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import wiseasily.WisEasily;
-import wiseasily.source.SourceCallback;
 
 public class scanWifiActivity extends AppCompatActivity{
 

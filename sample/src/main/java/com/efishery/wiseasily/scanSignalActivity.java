@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 
 import wiseasily.WisEasily;
-import wiseasily.source.SourceCallback;
 import wiseasily.util.ScanFilter;
 
 public class scanSignalActivity extends AppCompatActivity{
