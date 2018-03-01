@@ -92,14 +92,14 @@ public class WifiUtil {
         if (mWifiManager != null) {
             List<WifiConfiguration> list = mWifiManager.getConfiguredNetworks();
             for( WifiConfiguration i : list ) {
+                Log.d("Connect Wifi","Wifi Config " + i.SSID + "configFormat "+ getConfigFormatSSID(ssid));
                 if(i.SSID.equals(getConfigFormatSSID(ssid))){
                     mWifiManager.removeNetwork(i.networkId);
                     mWifiManager.saveConfiguration();
+                    return true;
                 }
             }
-            return true;
-        }else {
-            return false;
         }
+        return false;
     }
 }

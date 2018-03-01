@@ -118,8 +118,10 @@ public class MainActivity extends AppCompatActivity implements SourceCallback.Su
     public void onViewClicked() {
 
         if(wisEasily.getCurrentConnection() == ConnectionData.WIFI){
-            boolean success = wisEasily.isWifiConnectedToSsidContainsChar("efishery");
-            Log.d("Connect Wifi", "connect to efishery "+ success);
+            if(wisEasily.isWifiConnectedToSsid(ssid.getText().toString())){
+                boolean success = wisEasily.forgetCurrentSssid(ssid.getText().toString());
+                Log.d("Connect Wifi", "forgetCurrentSssid: "+ ssid.getText().toString() + success);
+            }
         }
     }
 
