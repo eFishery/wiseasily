@@ -12,6 +12,7 @@ import java.util.List;
 import wiseasily.source.SourceCallback;
 import wiseasily.util.ScanFilter;
 
+import static wiseasily.util.ConnectivityUtil.currentConnection;
 import static wiseasily.util.ConnectivityUtil.isConnectedToAP;
 import static wiseasily.util.ConnectivityUtil.isConnectedToAPContainsChar;
 
@@ -76,6 +77,11 @@ public class WisEasily {
     public boolean enableWifi(boolean enable){
         return connectWifi.enableWifi(enable);
     }
+
+    public int getCurrentConnection(){
+        return currentConnection(context);
+    }
+
     public boolean disconnectedToSsid(){
         return connectWifi.disconnectedToAP();
     }

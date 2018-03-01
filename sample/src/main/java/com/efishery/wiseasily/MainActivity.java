@@ -38,6 +38,7 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import wiseasily.WisEasily;
 import wiseasily.source.SourceCallback;
+import wiseasily.util.ConnectionData;
 
 public class MainActivity extends AppCompatActivity implements SourceCallback.SuccessCallback, PoolBroadcastFail.messageCallback {
 
@@ -113,10 +114,13 @@ public class MainActivity extends AppCompatActivity implements SourceCallback.Su
         pool.setText(message);
     }
 
-    @OnClick(R.id.clear)
+    @OnClick(R.id.currentConnection)
     public void onViewClicked() {
-        message = "";
-        pool.setText(message);
+
+        if(wisEasily.getCurrentConnection() == ConnectionData.WIFI){
+            boolean success = wisEasily.isWifiConnectedToSsidContainsChar("efishery");
+            Log.d("Connect Wifi", "connect to efishery "+ success);
+        }
     }
 
     private void connectSSID() {

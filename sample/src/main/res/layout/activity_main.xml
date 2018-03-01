@@ -66,10 +66,10 @@
         android:layout_centerInParent="true"/>
 
     <Button
-        android:id="@+id/clear"
+        android:id="@+id/currentConnection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="clear"
+        android:text="Current Connection"
         android:layout_below="@+id/scanWifiSignal"
         android:layout_centerInParent="true"/>
 
