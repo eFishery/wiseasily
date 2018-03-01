@@ -87,4 +87,19 @@ public class WifiUtil {
             return false;
         }
     }
+    public static boolean forgetCurrentNetwork(String ssid, Context context){
+        WifiManager mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (mWifiManager != null) {
+            List<WifiConfiguration> list = mWifiManager.getConfiguredNetworks();
+            for( WifiConfiguration i : list ) {
+                if(i.SSID.equals(getConfigFormatSSID(ssid))){
+                    mWifiManager.removeNetwork(i.networkId);
+                    mWifiManager.saveConfiguration();
+                }
+            }
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

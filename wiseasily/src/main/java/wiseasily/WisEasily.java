@@ -15,6 +15,7 @@ import wiseasily.util.ScanFilter;
 import static wiseasily.util.ConnectivityUtil.currentConnection;
 import static wiseasily.util.ConnectivityUtil.isConnectedToAP;
 import static wiseasily.util.ConnectivityUtil.isConnectedToAPContainsChar;
+import static wiseasily.util.WifiUtil.forgetCurrentNetwork;
 
 
 /**
@@ -92,5 +93,9 @@ public class WisEasily {
 
     public boolean isWifiConnectedToSsidContainsChar(String character){
         return isConnectedToAPContainsChar(character, context);
+    }
+
+    public boolean forgetCurrentSssid(String ssid){
+        return forgetCurrentNetwork(ssid, context);
     }
 }
