@@ -97,14 +97,14 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
                 if(listOfStateMachineWifi!=null){
                     Pair<SupplicantState, String> stateSuplicantSssid = getStateSsidPair(supplicantStateCurrent, ssidCurrent);
                     ArrayList<Pair> machineState = listOfStateMachineWifi.getStateMachine();
-                    if(containsPair(machineState, stateSuplicantSssid)){
+                    if(!containsPair(machineState, stateSuplicantSssid)){
                         stopListenAll();
                         isSuplicantCompletedCallback.onFail();
                     }
 
                 }
             }
-            listOfStateMachineWifi = new ListOfStateMachineWifi(supplicantStateCurrent, ssidCurrent);
+            listOfStateMachineWifi = new ListOfStateMachineWifi(supplicantStateCurrent, ssid);
         }
     }
     boolean enableNework(String ssid, Context cxt) {

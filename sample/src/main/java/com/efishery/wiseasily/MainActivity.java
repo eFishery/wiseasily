@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements SourceCallback.Su
 
         if(wisEasily.getCurrentConnection() == ConnectionData.WIFI){
             if(wisEasily.isWifiConnectedToSsid(ssid.getText().toString())){
+                wisEasily.disconnectedToSsid();
                 boolean success = wisEasily.forgetCurrentSssid(ssid.getText().toString());
                 Log.d("Connect Wifi", "forgetCurrentSssid: "+ ssid.getText().toString() + success);
             }
