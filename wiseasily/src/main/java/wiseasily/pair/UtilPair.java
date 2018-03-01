@@ -1,6 +1,7 @@
 package wiseasily.pair;
 
 import android.net.wifi.SupplicantState;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,9 @@ public class UtilPair {
         return new Pair<>(supplicantState, ssid);
     }
     public static boolean containsPair(ArrayList<Pair> pairs, Pair pair){
+        Log.d("Connect Wifi", "pairStateSsid"+ pair +pair.getSupplicantState()+ pair.getSsid());
         for(Pair pairStateSsid : pairs){
+            Log.d("Connect Wifi", "pairStateSsid"+ pairStateSsid +pairStateSsid.getSupplicantState()+ pairStateSsid.getSsid());
             if(pairStateSsid.equals(pair)){
                 return true;
             }
