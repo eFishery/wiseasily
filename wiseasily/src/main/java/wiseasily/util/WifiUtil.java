@@ -48,6 +48,7 @@ public class WifiUtil {
     public static boolean isScanResultsContainsSsid(@NonNull String ssid, @NonNull List<ScanResult> scanResults){
         boolean scanContainsSsid = false;
         for(ScanResult scanResult : scanResults){
+            Log.d("Connect Wifi", "Pool AP Finding "+ scanResult.SSID + ssid);
             if( scanResult.SSID.equals(ssid)){
                 scanContainsSsid = true;
                 break;
