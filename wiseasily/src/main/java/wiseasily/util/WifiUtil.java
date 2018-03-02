@@ -103,7 +103,7 @@ public class WifiUtil {
     public static String getCurrentWifi(Context context){
         WifiManager mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (mWifiManager != null) {
-            return mWifiManager.getConnectionInfo().getSSID();
+            return mWifiManager.getConnectionInfo().getSSID().replaceAll("^\"|\"$", "");
         }
         return "";
     }

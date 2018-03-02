@@ -38,7 +38,6 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import wiseasily.WisEasily;
 import wiseasily.source.SourceCallback;
-import wiseasily.util.ConnectionData;
 
 public class MainActivity extends AppCompatActivity implements SourceCallback.SuccessCallback, PoolBroadcastFail.messageCallback {
 
@@ -117,13 +116,14 @@ public class MainActivity extends AppCompatActivity implements SourceCallback.Su
     @OnClick(R.id.currentConnection)
     public void onViewClicked() {
 
-        if(wisEasily.getCurrentConnection() == ConnectionData.WIFI){
-            if(wisEasily.isWifiConnectedToSsid(ssid.getText().toString())){
-                wisEasily.disconnectedToSsid();
-                boolean success = wisEasily.forgetCurrentSssid();
-                Log.d("Connect Wifi", "forgetCurrentSssid: "+ ssid.getText().toString() + success);
-            }
-        }
+        ssid.setText(wisEasily.getCurrentSsid());
+//        if(wisEasily.getCurrentConnection() == ConnectionData.WIFI){
+//            if(wisEasily.isWifiConnectedToSsid(ssid.getText().toString())){
+//                wisEasily.disconnectedToSsid();
+//                boolean success = wisEasily.forgetCurrentSssid();
+//                Log.d("Connect Wifi", "forgetCurrentSssid: "+ ssid.getText().toString() + success);
+//            }
+//        }
     }
 
     private void connectSSID() {
