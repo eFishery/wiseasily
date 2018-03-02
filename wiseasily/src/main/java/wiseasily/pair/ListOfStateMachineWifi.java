@@ -52,7 +52,7 @@ public class ListOfStateMachineWifi {
             stateMachine.addAll(Arrays.asList(disconnectedSsid, associatedSsid));
         }else if(supplicantState == SupplicantState.ASSOCIATED && (!ssid.equals("<unknown ssid>") && !ssid.equals("0x"))){
             stateMachine = new ArrayList<>();
-            stateMachine.addAll(Arrays.asList(fourWayHandshakeSsid, completedSsid));
+            stateMachine.addAll(Arrays.asList(fourWayHandshakeSsid, groupHandshakeSsid, completedSsid));
         }else if(supplicantState == SupplicantState.FOUR_WAY_HANDSHAKE && (!ssid.equals("<unknown ssid>") && !ssid.equals("0x"))){
             stateMachine = new ArrayList<>();
             stateMachine.addAll(Arrays.asList(groupHandshakeSsid, completedSsid));
