@@ -16,6 +16,7 @@ import static wiseasily.util.ConnectivityUtil.currentConnection;
 import static wiseasily.util.ConnectivityUtil.isConnectedToAP;
 import static wiseasily.util.ConnectivityUtil.isConnectedToAPContainsChar;
 import static wiseasily.util.WifiUtil.forgetCurrentNetwork;
+import static wiseasily.util.WifiUtil.getCurrentWifi;
 
 
 /**
@@ -81,6 +82,10 @@ public class WisEasily {
 
     public int getCurrentConnection(){
         return currentConnection(context);
+    }
+
+    public String getCurrentSsid(){
+        return getCurrentWifi(context);
     }
 
     public boolean disconnectedToSsid(){

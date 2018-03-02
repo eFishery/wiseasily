@@ -87,6 +87,7 @@ public class WifiUtil {
             return false;
         }
     }
+
     public static boolean forgetCurrentNetwork(Context context){
         WifiManager mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (mWifiManager != null) {
@@ -96,5 +97,13 @@ public class WifiUtil {
         }else {
             return false;
         }
+    }
+
+    public static String getCurrentWifi(Context context){
+        WifiManager mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (mWifiManager != null) {
+            return mWifiManager.getConnectionInfo().getSSID();
+        }
+        return "";
     }
 }
