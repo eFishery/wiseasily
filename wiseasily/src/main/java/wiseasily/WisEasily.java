@@ -30,8 +30,10 @@ public class WisEasily {
     private final ConnectWifi connectWifi;
     @NonNull
     private final ScanWifi scanWifi;
+    @NonNull
     private final WifiDisabled wifiDisabled;
     private final WifiManager mWifiManager;
+    @NonNull
     private final Context context;
 
     public WisEasily(@NonNull Context context) {
@@ -56,11 +58,11 @@ public class WisEasily {
         scanWifi.start(callback);
     }
 
-    public void scanChangeInterval(int interval) {
+    public void scanChangeInterval(@NonNull int interval) {
         scanWifi.changeScanInterval(interval);
     }
 
-    public void scanChangeFilter(ScanFilter scanFilter) {
+    public void scanChangeFilter(@NonNull ScanFilter scanFilter) {
         scanWifi.changeFilter(scanFilter);
     }
 
@@ -76,7 +78,7 @@ public class WisEasily {
         return connectWifi.isWifiMEnable();
     }
 
-    public boolean enableWifi(boolean enable){
+    public boolean enableWifi(@NonNull boolean enable){
         return connectWifi.enableWifi(enable);
     }
 

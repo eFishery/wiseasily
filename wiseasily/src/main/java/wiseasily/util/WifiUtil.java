@@ -57,24 +57,22 @@ public class WifiUtil {
         return scanContainsSsid;
     }
 
-    private static int getNetIdOfScanResultInWifiConfig(String ssid, List<WifiConfiguration> wifiConfigurations) {
+    private static int getNetIdOfScanResultInWifiConfig(@NonNull String ssid,@NonNull List<WifiConfiguration> wifiConfigurations) {
         String ssidConfig = getConfigFormatSSID(ssid);
-        if (wifiConfigurations!=null) {
-            for (WifiConfiguration wifiConfiguration : wifiConfigurations){
-                if(wifiConfiguration.SSID.equals(ssidConfig)){
-                    return wifiConfiguration.networkId;
-                }
+        for (WifiConfiguration wifiConfiguration : wifiConfigurations){
+            if(wifiConfiguration.SSID.equals(ssidConfig)){
+                return wifiConfiguration.networkId;
             }
         }
         return -1;
     }
 
-    public static String getConfigFormatSSID(String ssid){
+    public static String getConfigFormatSSID(@NonNull String ssid){
         return  "\""+ ssid +"\"";
     }
 
 
-    public static boolean isWifiConnectedToAP(String APSsid, Context context){
+    public static boolean isWifiConnectedToAP(@NonNull String APSsid,@NonNull Context context){
         WifiManager mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if(mWifiManager!=null){
             String ssidCurrent = mWifiManager.getConnectionInfo().getSSID();
@@ -89,7 +87,7 @@ public class WifiUtil {
         }
     }
 
-    public static boolean forgetCurrentNetwork(Context context){
+    public static boolean forgetCurrentNetwork(@NonNull Context context){
         WifiManager mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (mWifiManager != null) {
             int networkId = mWifiManager.getConnectionInfo().getNetworkId();
@@ -100,7 +98,7 @@ public class WifiUtil {
         }
     }
 
-    public static String getCurrentWifi(Context context){
+    public static String getCurrentWifi(@NonNull Context context){
         WifiManager mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (mWifiManager != null) {
             return mWifiManager.getConnectionInfo().getSSID().replaceAll("^\"|\"$", "");

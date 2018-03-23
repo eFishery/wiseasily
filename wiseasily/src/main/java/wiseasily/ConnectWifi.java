@@ -8,7 +8,6 @@ import android.util.Log;
 import wiseasily.poolbroadcast.PoolBroadcastAPEnabled;
 import wiseasily.poolbroadcast.PoolBroadcastAPFound;
 import wiseasily.poolbroadcast.PoolBroadcastWifiConnected;
-import wiseasily.poolbroadcast.PoolBroadcastWifiForceConnected;
 import wiseasily.source.SourceCallback;
 
 import static wiseasily.util.ConnectivityUtil.isConnectedToAP;
@@ -35,11 +34,7 @@ class ConnectWifi {
             if(isConnectedToAP(ssid, mContext)){
                 callback.onSuccess();
             }else {
-                if(isWifiConnectedToAP(ssid, mContext) && mWifiManager.isWifiEnabled()){
-                    poolbroadcastWifiConnected(ssid, callback);
-                }else {
-                    ProcessListenConnection(ssid, callback);
-                }
+                ProcessListenConnection(ssid, callback);
             }
         }
     }
