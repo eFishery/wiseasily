@@ -46,7 +46,7 @@ public class ListOfStateMachineWifi {
             stateMachine.addAll(Arrays.asList(scanningUnknown, scanningOx, associatingUnkown, associatingOx, associatedSsid));
         }else if(supplicantState == SupplicantState.DISCONNECTED && (!ssid.contains("<unknown ssid>") && !ssid.contains("0x"))){
             stateMachine = new ArrayList<>();
-            stateMachine.addAll(Arrays.asList(scanningSsid, associatingSsid, associatedSsid));
+            stateMachine.addAll(Arrays.asList(scanningOx, scanningSsid, associatingSsid, associatedSsid));
         }else if(supplicantState == SupplicantState.ASSOCIATING && (!ssid.contains("<unknown ssid>") && !ssid.contains("0x"))){
             stateMachine = new ArrayList<>();
             stateMachine.addAll(Arrays.asList(disconnectedSsid, associatedSsid));
