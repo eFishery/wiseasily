@@ -9,9 +9,12 @@ import wiseasily.poolbroadcast.PoolBroadcastAPEnabled;
 import wiseasily.poolbroadcast.PoolBroadcastAPFound;
 import wiseasily.poolbroadcast.PoolBroadcastWifiConnected;
 import wiseasily.source.SourceCallback;
+import wiseasily.util.ConnectionData;
 
+import static wiseasily.util.ConnectivityUtil.currentConnection;
 import static wiseasily.util.ConnectivityUtil.isConnectedToAP;
-import static wiseasily.util.WifiUtil.isWifiConnectedToAP;
+import static wiseasily.util.WifiUtil.forgetCurrentNetwork;
+import static wiseasily.util.WifiUtil.getCurrentWifi;
 
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
@@ -21,6 +24,8 @@ import static wiseasily.util.WifiUtil.isWifiConnectedToAP;
 class ConnectWifi {
     private final Context mContext;
     private final WifiManager mWifiManager;
+    private int prevConnection;
+    private String ssidPrev;
 
     ConnectWifi(@NonNull Context context) {
         this.mContext = context;
@@ -31,6 +36,7 @@ class ConnectWifi {
         if (ssid.isEmpty()) {
             callback.onError("SSID Cannot be Empty");
         } else {
+            saveCurrentConnection(ssid);
             if(isConnectedToAP(ssid, mContext)){
                 callback.onSuccess();
             }else {
@@ -62,6 +68,7 @@ class ConnectWifi {
 
                     @Override
                     public void onFail() {
+                        backToPrevNetwork();
                         Log.d("Connect Wifi", "BroadcastAPEnabled onFail");
                         callback.onError("Can Not Connect To Wifi");
                     }
@@ -70,14 +77,9 @@ class ConnectWifi {
 
             @Override
             public void onAPNotFound() {
+                backToPrevNetwork();
                 Log.d("Connect Wifi", "BroadcastAPFound onAPNotFound");
                 callback.onError("Not Found Wifi");
-            }
-
-            @Override
-            public void onFail() {
-                Log.d("Connect Wifi", "BroadcastAPFound onFail");
-                callback.onError("Can Not Connect To Wifi");
             }
         });
     }
@@ -104,5 +106,41 @@ class ConnectWifi {
 
     boolean isWifiMEnable(){
         return mWifiManager.isWifiEnabled();
+    }
+
+    private void saveCurrentConnection(String ssid) {
+        prevConnection = currentConnection(mContext);
+        if(prevConnection == ConnectionData.WIFI){
+            if(isConnectedToAP(ssid, mContext)){
+                Log.d("Connect Wifi", "connect to: "+ ssid);
+                prevConnection = ConnectionData.EMPTY;
+            }else {
+                ssidPrev =getCurrentWifi(mContext);
+            }
+        }
+    }
+
+    public void backToPrevNetwork(){
+        if(prevConnection ==ConnectionData.EMPTY){
+            disconnectedToAP();
+            boolean success = forgetCurrentNetwork(mContext);
+            Log.d("Connect Wifi", "forgetCurrentSssid: ");
+        }else if(prevConnection == ConnectionData.MOBILE){
+            enableWifi(false);
+            Log.d("Connect Wifi", "enable Mobile: ");
+        }else {
+            Log.d("Connect Wifi", "enable ssidprev :"+ ssidPrev);
+            ProcessListenConnection(ssidPrev, new SourceCallback.WisEasilyCallback() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+
+                }
+            });
+        }
     }
 }

@@ -36,7 +36,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
                 if(!WifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
                     apFoundCallback.onAPNotFound();
                 }else {
-                    apFoundCallback.onFail();
+                    apFoundCallback.onAPNotFound();
                 }
             }
         }
@@ -51,20 +51,24 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
     }
 
     public void startListen( @NonNull SourceCallback.APFoundCallback callback){
-        this.apFoundCallback = callback;
-        if(mWifiManager!=null){
-            mWifiManager.setWifiEnabled(true);
-            mWifiManager.startScan();
-            Log.d("Connect Wifi", "AP Find startListen");
-            mContext.registerReceiver(this, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-            poolBroadcastWifiOff.startListen(new PoolBroadcastWifiOff.ConnectWifiFail() {
-                @Override
-                public void onWifiOff() {
-                    stopListen();
-                    callback.onFail();
-                }
-            });
-            postDelay();
+        if(this.ssid!=null && !this.ssid.isEmpty()){
+            this.apFoundCallback = callback;
+            if(mWifiManager!=null){
+                mWifiManager.setWifiEnabled(true);
+                mWifiManager.startScan();
+                Log.d("Connect Wifi", "AP Find startListen");
+                mContext.registerReceiver(this, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+                poolBroadcastWifiOff.startListen(new PoolBroadcastWifiOff.ConnectWifiFail() {
+                    @Override
+                    public void onWifiOff() {
+                        stopListen();
+                        callback.onAPNotFound();
+                    }
+                });
+                postDelay();
+            }
+        }else {
+            callback.onAPNotFound();
         }
     }
 

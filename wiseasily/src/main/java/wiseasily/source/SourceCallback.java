@@ -27,7 +27,6 @@ public interface SourceCallback {
     interface APFoundCallback {
         void onAPFound();
         void onAPNotFound();
-        void onFail();
     }
 
     interface SuccessCallback {

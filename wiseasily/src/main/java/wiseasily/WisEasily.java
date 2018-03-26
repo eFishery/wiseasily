@@ -9,6 +9,7 @@ import android.support.annotation.RequiresPermission;
 
 import java.util.List;
 
+import wiseasily.poolbroadcast.PoolBroadcastAPFound;
 import wiseasily.source.SourceCallback;
 import wiseasily.util.ScanFilter;
 
@@ -49,8 +50,18 @@ public class WisEasily {
         connectWifi.start(ssid, callback);
     }
 
+    public void connectBackToPrev(){
+        connectWifi.backToPrevNetwork();
+    }
+
     public List<ScanResult> getWifiResult() {
         return mWifiManager.getScanResults();
+    }
+
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_NETWORK_STATE, Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION})
+    public void isWifiPatternFound(@NonNull String patternSsid, @NonNull SourceCallback.APFoundCallback callback) {
+        PoolBroadcastAPFound poolBroadcastAPFound = new PoolBroadcastAPFound(context, patternSsid);
+        poolBroadcastAPFound.startListen(callback);
     }
 
     @RequiresPermission(allOf = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_NETWORK_STATE, Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION})
