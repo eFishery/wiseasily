@@ -59,8 +59,8 @@ public class WisEasily {
     }
 
     @RequiresPermission(allOf = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_NETWORK_STATE, Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION})
-    public void isWifiPatternFound(@NonNull String patternSsid, @NonNull SourceCallback.APFoundCallback callback) {
-        PoolBroadcastAPFound poolBroadcastAPFound = new PoolBroadcastAPFound(context, patternSsid);
+    public void isWifiPatternFound(@NonNull String patternSsid, int timeoutSecond, int totalScan, @NonNull SourceCallback.APFoundCallback callback) {
+        PoolBroadcastAPFound poolBroadcastAPFound = new PoolBroadcastAPFound(context, timeoutSecond, totalScan, patternSsid);
         poolBroadcastAPFound.startListen(callback);
     }
 

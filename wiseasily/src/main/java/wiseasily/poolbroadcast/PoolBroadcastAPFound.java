@@ -24,6 +24,8 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
     private final Context mContext;
     private final String ssid;
     private final PoolBroadcastWifiOff poolBroadcastWifiOff;
+    private int totalScan = 3;
+    private int timeoutSecond = 25;
     private SourceCallback.APFoundCallback apFoundCallback;
     private final WifiManager mWifiManager;
     private Handler mHandler;
@@ -41,6 +43,20 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
             }
         }
     };
+
+    public PoolBroadcastAPFound(@NonNull Context context, int timeoutSecond, int totalScan, @NonNull String ssid) {
+        if(timeoutSecond!=0){
+            this.timeoutSecond = timeoutSecond;
+        }
+        if(totalScan!=0){
+            this.totalScan = totalScan;
+        }
+        this.mContext = context;
+        this.ssid = ssid;
+        mHandler = new Handler();
+        mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
+    }
 
     public PoolBroadcastAPFound(@NonNull Context context, @NonNull String ssid) {
         this.mContext = context;
@@ -73,7 +89,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
     }
 
     private void postDelay() {
-        mHandler.postDelayed(mOutOfTime, 25000);
+        mHandler.postDelayed(mOutOfTime, timeoutSecond*1000);
     }
 
     public void stopListen(){
@@ -95,7 +111,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
             Log.d("Connect Wifi", "Pool AP Found "+ mWifiManager.getScanResults().toString());
             if(!WifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
                 count++;
-                if(count>3){
+                if(count>totalScan){
                     count=0;
                     apFoundCallback.onAPNotFound();
                 }else {
