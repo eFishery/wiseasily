@@ -11,13 +11,12 @@ import java.util.List;
 
 import wiseasily.poolbroadcast.PoolBroadcastAPFound;
 import wiseasily.source.SourceCallback;
+import wiseasily.util.ConnectivityUtil;
 import wiseasily.util.ScanFilter;
+import wiseasily.util.WifiUtil;
 
 import static wiseasily.util.ConnectivityUtil.currentConnection;
-import static wiseasily.util.ConnectivityUtil.isConnectedToAP;
 import static wiseasily.util.ConnectivityUtil.isConnectedToAPContainsChar;
-import static wiseasily.util.WifiUtil.forgetCurrentNetwork;
-import static wiseasily.util.WifiUtil.getCurrentWifi;
 
 
 /**
@@ -36,12 +35,16 @@ public class WisEasily {
     private final WifiManager mWifiManager;
     @NonNull
     private final Context context;
+    private final WifiUtil wifiUtil;
+    private final ConnectivityUtil connectivityUtil;
 
     public WisEasily(@NonNull Context context) {
         wifiDisabled = new WifiDisabled(context);
         connectWifi = new ConnectWifi(context);
         scanWifi = new ScanWifi(context);
         this.context = context;
+        wifiUtil = new WifiUtil();
+        connectivityUtil = new ConnectivityUtil();
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
 
@@ -98,7 +101,7 @@ public class WisEasily {
     }
 
     public String getCurrentSsid(){
-        return getCurrentWifi(context);
+        return wifiUtil.getCurrentWifi(context);
     }
 
     public boolean disconnectedToSsid(){
@@ -106,7 +109,7 @@ public class WisEasily {
     }
 
     public boolean isWifiConnectedToSsid(String ssid){
-        return isConnectedToAP(ssid, context);
+        return connectivityUtil.isConnectedToAP(ssid, context);
     }
 
     public boolean isWifiConnectedToSsidContainsChar(String character){
@@ -114,6 +117,6 @@ public class WisEasily {
     }
 
     public boolean forgetCurrentSssid(){
-        return forgetCurrentNetwork(context);
+        return wifiUtil.forgetCurrentNetwork(context);
     }
 }

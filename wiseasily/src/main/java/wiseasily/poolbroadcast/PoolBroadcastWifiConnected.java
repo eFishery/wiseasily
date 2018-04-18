@@ -5,15 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 
 import wiseasily.source.SourceCallback;
-import wiseasily.util.WifiUtil;
-
-import static wiseasily.util.ConnectivityUtil.isConnectedToAP;
+import wiseasily.util.ConnectivityUtil;
 
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
@@ -25,11 +21,13 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver  {
 
     private final Context mContext;
     private final String ssid;
+    private final ConnectivityUtil connectivityUtil;
     private SourceCallback.SuccessCallback isConnectivityAction;
 
     public PoolBroadcastWifiConnected(@NonNull Context context, @NonNull String ssid) {
         this.mContext = context;
         this.ssid = ssid;
+        connectivityUtil = new ConnectivityUtil();
     }
 
     public void startListen(@NonNull SourceCallback.SuccessCallback callback){
@@ -44,7 +42,7 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver  {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction()!=null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)){
-            if(isConnectedToAP(ssid, context)){
+            if(connectivityUtil.isConnectedToAP(ssid, context)){
                 stopListen();
                 isConnectivityAction.onSuccess();
             }

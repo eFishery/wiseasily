@@ -11,15 +11,18 @@ import java.util.ArrayList;
  */
 
 public class UtilPair {
-    public static Pair<SupplicantState, String> getStateSsidPair(SupplicantState supplicantState, String ssid){
+    public UtilPair() {
+    }
+
+    public Pair<SupplicantState, String> getStateSsidPair(SupplicantState supplicantState, String ssid){
         return new Pair<>(supplicantState, ssid);
     }
-    public static boolean containsPair(ArrayList<Pair> pairs, Pair pair){
-        Log.d("Connect Wifi", "pairStateSsid"+ pair +pair.getSupplicantState()+ pair.getSsid());
-        for(Pair pairStateSsid : pairs){
-            Log.d("Connect Wifi", "pairStateSsid"+ pairStateSsid +pairStateSsid.getSupplicantState()+ pairStateSsid.getSsid());
-            if(pairStateSsid.equals(pair)){
-                return true;
+    public boolean containsPair(ArrayList<Pair> pairs, Pair pair){
+        if(pairs!=null && !pairs.isEmpty() && pair!=null){
+            for(Pair pairStateSsid : pairs){
+                if(pairStateSsid.equals(pair)){
+                    return true;
+                }
             }
         }
         return false;

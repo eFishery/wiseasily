@@ -29,6 +29,7 @@ public class PoolBroadcastWifiForceConnected extends BroadcastReceiver {
     private final ConnectivityManager mConnectivityManager;
     private final String ssid;
     private final Context mContext;
+    private final WifiUtil wifiUtil;
     private SourceCallback.ConnectCallback isConnectivityAction;
     private final PoolBroadcastWifiOff poolBroadcastWifiOff;
     public static final String NETWORK_AVAILABILITY_ACTION = "com.wiseasily.NETWORK_AVAILABILITY_ACTION";
@@ -36,6 +37,7 @@ public class PoolBroadcastWifiForceConnected extends BroadcastReceiver {
     public PoolBroadcastWifiForceConnected(@NonNull Context context, @NonNull String ssid) {
         mContext = context;
         this.ssid = ssid;
+        wifiUtil = new WifiUtil();
         mConnectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(context);
 
@@ -122,7 +124,7 @@ public class PoolBroadcastWifiForceConnected extends BroadcastReceiver {
                 if (activeNetwork != null) {
                     Log.d("Connect Wifi","Active Network " + activeNetwork.toString());
                     if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI){
-                        if(activeNetwork.getExtraInfo().equals(WifiUtil.getConfigFormatSSID(ssid))){
+                        if(activeNetwork.getExtraInfo().equals(wifiUtil.getConfigFormatSSID(ssid))){
                             isConnectivityAction.onSuccess();
                         }else {
                             isConnectivityAction.onFail();

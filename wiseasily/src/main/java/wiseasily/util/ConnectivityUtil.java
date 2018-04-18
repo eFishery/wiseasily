@@ -11,13 +11,19 @@ import android.util.Log;
  */
 
 public class ConnectivityUtil {
-    public static boolean isConnectedToAP(String APSsid, Context context){
+    private final WifiUtil wifiUtil;
+
+    public ConnectivityUtil() {
+        wifiUtil = new WifiUtil();
+    }
+
+    public boolean isConnectedToAP(String APSsid, Context context){
         ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if(mConnectivityManager!=null){
             NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
             if(activeNetwork!=null) {
                 Log.d("Connect Wifi", "Active Network " + activeNetwork.toString());
-                return activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.getExtraInfo().equals(WifiUtil.getConfigFormatSSID(APSsid));
+                return activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.getExtraInfo().equals(wifiUtil.getConfigFormatSSID(APSsid));
             }else {
                 Log.d("Connect Wifi", "Active Network null");
                 return false;

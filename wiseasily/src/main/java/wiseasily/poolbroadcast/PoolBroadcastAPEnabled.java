@@ -15,14 +15,11 @@ import com.efishery.putrabangga.wiseasily.BuildConfig;
 import java.util.ArrayList;
 import java.util.List;
 
-import wiseasily.pair.ListOfStateMachineWifi;
+import wiseasily.pair.GenerateStateMachineWifi;
 import wiseasily.pair.Pair;
+import wiseasily.pair.UtilPair;
 import wiseasily.source.SourceCallback;
 import wiseasily.util.WifiUtil;
-
-import static wiseasily.pair.UtilPair.containsPair;
-import static wiseasily.pair.UtilPair.getStateSsidPair;
-import static wiseasily.util.WifiUtil.getConfigFormatSSID;
 
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
@@ -35,24 +32,28 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
     private final WifiManager mWifiManager;
     private final String ssid;
     private final PoolBroadcastWifiOff poolBroadcastWifiOff;
+    private final WifiUtil wifiUtil;
     private SourceCallback.ConnectCallback isSuplicantCompletedCallback;
-    private ListOfStateMachineWifi listOfStateMachineWifi = null;
+    private GenerateStateMachineWifi generateStateMachineWifi = null;
+    private int i = 0;
 
 
     public PoolBroadcastAPEnabled(@NonNull Context context, String ssid) {
         this.mContext = context;
         this.ssid = ssid;
+        wifiUtil = new WifiUtil();
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
+        generateStateMachineWifi = new GenerateStateMachineWifi(ssid);
     }
 
     public void startListen(@NonNull SourceCallback.ConnectCallback callback){
         this.isSuplicantCompletedCallback = callback;
         if(mWifiManager!=null){
-            if(!WifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
+            if(!wifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
                 isSuplicantCompletedCallback.onFail();
             }else {
-                int netId = WifiUtil.getNetId(ssid, mWifiManager);
+                int netId = wifiUtil.getNetId(ssid, mWifiManager);
                 if(!enableNework(ssid, mContext)){
                     mWifiManager.enableNetwork(netId, true);
                 }
@@ -90,21 +91,21 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
             String ssidCurrent = mWifiManager.getConnectionInfo().getSSID();
             Log.d("Connect Wifi", "AP Enabled SpState" + supplicantStateCurrent);
             Log.d("Connect Wifi", "AP Enabled ssidCurrent"+ ssidCurrent);
-            if(supplicantStateCurrent == SupplicantState.COMPLETED && getConfigFormatSSID(ssid).equals(ssidCurrent)){
+            if(supplicantStateCurrent == SupplicantState.COMPLETED && wifiUtil.getConfigFormatSSID(ssid).equals(ssidCurrent)){
                 stopListenAll();
                 isSuplicantCompletedCallback.onSuccess();
             }else {
-                if(listOfStateMachineWifi!=null){
-                    Pair<SupplicantState, String> stateSuplicantSssid = getStateSsidPair(supplicantStateCurrent, ssidCurrent);
-                    ArrayList<Pair> machineState = listOfStateMachineWifi.getStateMachine();
-                    if(!containsPair(machineState, stateSuplicantSssid)){
+                if(i!=0){
+                    Pair<SupplicantState, String> stateSuplicantSssid = new UtilPair().getStateSsidPair(supplicantStateCurrent, ssidCurrent);
+                    ArrayList<Pair> machineState = generateStateMachineWifi.getStateMachine();
+                    if(!new UtilPair().containsPair(machineState, stateSuplicantSssid)){
                         stopListenAll();
                         isSuplicantCompletedCallback.onFail();
                     }
-
+                    generateStateMachineWifi.setStateMachine(supplicantStateCurrent, ssidCurrent);
+                    i++;
                 }
             }
-            listOfStateMachineWifi = new ListOfStateMachineWifi(supplicantStateCurrent, ssid);
         }
     }
     boolean enableNework(String ssid, Context cxt) {

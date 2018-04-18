@@ -10,11 +10,10 @@ import wiseasily.poolbroadcast.PoolBroadcastAPFound;
 import wiseasily.poolbroadcast.PoolBroadcastWifiConnected;
 import wiseasily.source.SourceCallback;
 import wiseasily.util.ConnectionData;
+import wiseasily.util.ConnectivityUtil;
+import wiseasily.util.WifiUtil;
 
 import static wiseasily.util.ConnectivityUtil.currentConnection;
-import static wiseasily.util.ConnectivityUtil.isConnectedToAP;
-import static wiseasily.util.WifiUtil.forgetCurrentNetwork;
-import static wiseasily.util.WifiUtil.getCurrentWifi;
 
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
@@ -24,12 +23,16 @@ import static wiseasily.util.WifiUtil.getCurrentWifi;
 class ConnectWifi {
     private final Context mContext;
     private final WifiManager mWifiManager;
+    private final WifiUtil wifiUtil;
+    private final ConnectivityUtil connectivityUtil;
     private int prevConnection;
     private String ssidPrev;
 
     ConnectWifi(@NonNull Context context) {
         this.mContext = context;
         this.mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiUtil = new WifiUtil();
+        connectivityUtil = new ConnectivityUtil();
     }
 
     void start(@NonNull String ssid,@NonNull final SourceCallback.WisEasilyCallback callback) {
@@ -37,7 +40,7 @@ class ConnectWifi {
             callback.onError("SSID Cannot be Empty");
         } else {
             saveCurrentConnection(ssid);
-            if(isConnectedToAP(ssid, mContext)){
+            if(connectivityUtil.isConnectedToAP(ssid, mContext)){
                 callback.onSuccess();
             }else {
                 ProcessListenConnection(ssid, callback);
@@ -111,11 +114,11 @@ class ConnectWifi {
     private void saveCurrentConnection(String ssid) {
         prevConnection = currentConnection(mContext);
         if(prevConnection == ConnectionData.WIFI){
-            if(isConnectedToAP(ssid, mContext)){
+            if(connectivityUtil.isConnectedToAP(ssid, mContext)){
                 Log.d("Connect Wifi", "connect to: "+ ssid);
                 prevConnection = ConnectionData.EMPTY;
             }else {
-                ssidPrev =getCurrentWifi(mContext);
+                ssidPrev =wifiUtil.getCurrentWifi(mContext);
             }
         }
     }
@@ -123,7 +126,7 @@ class ConnectWifi {
     public void backToPrevNetwork(){
         if(prevConnection ==ConnectionData.EMPTY){
             disconnectedToAP();
-            boolean success = forgetCurrentNetwork(mContext);
+            boolean success = wifiUtil.forgetCurrentNetwork(mContext);
             Log.d("Connect Wifi", "forgetCurrentSssid: ");
         }else if(prevConnection == ConnectionData.MOBILE){
             enableWifi(false);

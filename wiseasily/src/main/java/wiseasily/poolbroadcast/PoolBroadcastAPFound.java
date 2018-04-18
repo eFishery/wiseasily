@@ -26,6 +26,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
     private final PoolBroadcastWifiOff poolBroadcastWifiOff;
     private int totalScan = 3;
     private int timeoutSecond = 25;
+    private final WifiUtil wifiUtil;
     private SourceCallback.APFoundCallback apFoundCallback;
     private final WifiManager mWifiManager;
     private Handler mHandler;
@@ -35,7 +36,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
         public void run() {
             mHandler.removeCallbacks(mOutOfTime);
             if(apFoundCallback!=null){
-                if(!WifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
+                if(!wifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
                     apFoundCallback.onAPNotFound();
                 }else {
                     apFoundCallback.onAPNotFound();
@@ -51,6 +52,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
         if(totalScan!=0){
             this.totalScan = totalScan;
         }
+        wifiUtil = new WifiUtil();
         this.mContext = context;
         this.ssid = ssid;
         mHandler = new Handler();
@@ -62,6 +64,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
         this.mContext = context;
         this.ssid = ssid;
         mHandler = new Handler();
+        wifiUtil = new WifiUtil();
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
     }
@@ -109,7 +112,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
             stopListenAll();
             mHandler.removeCallbacks(mOutOfTime);
             Log.d("Connect Wifi", "Pool AP Found "+ mWifiManager.getScanResults().toString());
-            if(!WifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
+            if(!wifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
                 count++;
                 if(count>totalScan){
                     count=0;

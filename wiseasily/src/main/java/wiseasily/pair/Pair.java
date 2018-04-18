@@ -29,4 +29,11 @@ public class Pair<SupplicantState,String> {
                 this.ssid.equals(pairo.getSsid());
     }
 
+    @Override
+    public java.lang.String toString() {
+        return "Pair{" +
+                "supplicantState=" + supplicantState +
+                ", ssid=" + ssid +
+                '}';
+    }
 }
