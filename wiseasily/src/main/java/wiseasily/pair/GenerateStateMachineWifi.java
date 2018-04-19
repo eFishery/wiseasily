@@ -48,7 +48,7 @@ public class GenerateStateMachineWifi {
             Pair<SupplicantState, String> completedSsid = new Pair<>(SupplicantState.COMPLETED, ssidConfig);
             if(supplicantState == SupplicantState.SCANNING && (ssid.contains("<unknown ssid>") || ssid.contains("0x"))){
                 stateMachine = new ArrayList<>();
-                stateMachine.addAll(Arrays.asList(disconnectedSsid, associatingSsid, associatedSsid));
+                stateMachine.addAll(Arrays.asList(scanningOx, scanningUnknown, disconnectedSsid, associatingSsid, associatedSsid));
             }else if(supplicantState == SupplicantState.SCANNING && (!ssid.contains("<unknown ssid>") && !ssid.contains("0x"))){
                 stateMachine = new ArrayList<>();
                 stateMachine.addAll(Arrays.asList(disconnectedUnkown, disconnectedOx, disconnectedSsid, associatingSsid, associatedSsid));
