@@ -17,6 +17,7 @@ import java.util.List;
 
 import wiseasily.pair.GenerateStateMachineWifi;
 import wiseasily.pair.Pair;
+import wiseasily.pair.ServiceStateMachine;
 import wiseasily.pair.UtilPair;
 import wiseasily.source.SourceCallback;
 import wiseasily.util.WifiUtil;
@@ -98,16 +99,26 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
                 if(i!=0){
                     Pair<SupplicantState, String> stateSuplicantSssid = new UtilPair().getStateSsidPair(supplicantStateCurrent, ssidCurrent);
                     ArrayList<Pair> machineState = generateStateMachineWifi.getStateMachine();
+                    Log.d("Connect Wifi", "stateSuplicantSssid" + stateSuplicantSssid);
                     if(!new UtilPair().containsPair(machineState, stateSuplicantSssid)){
+                        intentToServiceStateMachine(context, stateSuplicantSssid);
                         stopListenAll();
                         isSuplicantCompletedCallback.onFail();
                     }
-                    generateStateMachineWifi.setStateMachine(supplicantStateCurrent, ssidCurrent);
-                    i++;
                 }
+                generateStateMachineWifi.setStateMachine(supplicantStateCurrent, ssidCurrent);
+                i++;
             }
         }
     }
+
+    private void intentToServiceStateMachine(Context context, Pair pair) {
+        Intent serviceIntent = new Intent(context ,ServiceStateMachine.class);
+        serviceIntent.putExtra("SSID", ssid);
+        serviceIntent.putExtra("machinestate", pair);
+        context.startService(serviceIntent);
+    }
+
     boolean enableNework(String ssid, Context cxt) {
         boolean state = false;
         WifiManager wm = (WifiManager) cxt.getApplicationContext().getSystemService(Context.WIFI_SERVICE);

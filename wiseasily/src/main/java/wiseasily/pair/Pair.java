@@ -1,11 +1,13 @@
 package wiseasily.pair;
 
+import java.io.Serializable;
+
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
  * Created by putrabangga on 13/02/18.
  */
 
-public class Pair<SupplicantState,String> {
+public class Pair<SupplicantState,String> implements Serializable {
 
     private final SupplicantState supplicantState;
     private final String ssid;
