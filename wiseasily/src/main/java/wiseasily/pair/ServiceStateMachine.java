@@ -36,61 +36,63 @@ public class ServiceStateMachine extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String ssid = intent.getStringExtra("SSID");
-        Pair<SupplicantState, String> machineState = (Pair<SupplicantState, String>) intent.getSerializableExtra("machinestate");
+        if(intent!=null){
+            String ssid = intent.getStringExtra("SSID");
+            Pair<SupplicantState, String> machineState = (Pair<SupplicantState, String>) intent.getSerializableExtra("machinestate");
 
-        GenerateStateMachineWifi generateStateMachineWifi = new GenerateStateMachineWifi(ssid);
-        generateStateMachineWifi.setStateMachine(machineState.getSupplicantState(), machineState.getSsid());
+            GenerateStateMachineWifi generateStateMachineWifi = new GenerateStateMachineWifi(ssid);
+            generateStateMachineWifi.setStateMachine(machineState.getSupplicantState(), machineState.getSsid());
 
-        IntentFilter theFilter = new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+            IntentFilter theFilter = new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
 
-        WifiManager mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            WifiManager mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        ArrayList<Pair> successfulConnectStateMachine = new ArrayList<>();
-        successfulConnectStateMachine.add(machineState);
+            ArrayList<Pair> successfulConnectStateMachine = new ArrayList<>();
+            successfulConnectStateMachine.add(machineState);
 
-        poolBroadcastWifiOff = new PoolBroadcastWifiOff(this);
-        poolBroadcastWifiOff.startListen(new PoolBroadcastWifiOff.ConnectWifiFail() {
-            @Override
-            public void onWifiOff() {
-                stopReceiveStateMachine();
-            }
-        });
-
-        this.broadcastReceiver = new BroadcastReceiver() {
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                SupplicantState supplicantStateCurrent = intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-                String ssidCurrent = mWifiManager.getConnectionInfo().getSSID();
-                Log.d("Connect Wifi Service", "AP Enabled SpState" + supplicantStateCurrent);
-                Log.d("Connect Wifi Service", "AP Enabled ssidCurrent"+ ssidCurrent);
-                if(supplicantStateCurrent == SupplicantState.COMPLETED){
+            poolBroadcastWifiOff = new PoolBroadcastWifiOff(this);
+            poolBroadcastWifiOff.startListen(new PoolBroadcastWifiOff.ConnectWifiFail() {
+                @Override
+                public void onWifiOff() {
                     stopReceiveStateMachine();
-                    if(new WifiUtil().getConfigFormatSSID(ssid).equals(ssidCurrent)){
-                        AndroidLogger logger = getLogger(ServiceStateMachine.this);
-                        if(logger!=null){
-                            String deviceInfo = new Device().getDeviceInfo();
-                            String message = "DeviceInfo : " + deviceInfo + "SSID : " + ssid + " StateMachine : " + successfulConnectStateMachine.toString();
-                            Log.d("Connect Wifi Service", "Send Log "+ message);
-                            logger.log(message);
+                }
+            });
+
+            this.broadcastReceiver = new BroadcastReceiver() {
+
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    SupplicantState supplicantStateCurrent = intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+                    String ssidCurrent = mWifiManager.getConnectionInfo().getSSID();
+                    Log.d("Connect Wifi Service", "AP Enabled SpState" + supplicantStateCurrent);
+                    Log.d("Connect Wifi Service", "AP Enabled ssidCurrent"+ ssidCurrent);
+                    if(supplicantStateCurrent == SupplicantState.COMPLETED){
+                        stopReceiveStateMachine();
+                        if(new WifiUtil().getConfigFormatSSID(ssid).equals(ssidCurrent)){
+                            AndroidLogger logger = getLogger(ServiceStateMachine.this);
+                            if(logger!=null){
+                                String deviceInfo = new Device().getDeviceInfo();
+                                String message = "DeviceInfo : " + deviceInfo + "SSID : " + ssid + " StateMachine : " + successfulConnectStateMachine.toString();
+                                Log.d("Connect Wifi Service", "Send Log "+ message);
+                                logger.log(message);
+                            }
                         }
-                    }
-                }else {
-                    Pair<SupplicantState, String> stateSuplicantSssid = new UtilPair().getStateSsidPair(supplicantStateCurrent, ssidCurrent);
-                    ArrayList<Pair> machineState = generateStateMachineWifi.getStateMachine();
+                    }else {
+                        Pair<SupplicantState, String> stateSuplicantSssid = new UtilPair().getStateSsidPair(supplicantStateCurrent, ssidCurrent);
+                        ArrayList<Pair> machineState = generateStateMachineWifi.getStateMachine();
 //                    if(!new UtilPair().containsPair(machineState, stateSuplicantSssid)){
 //                        onDestroy();
 //                    }else {
 //                        successfulConnectStateMachine.add(stateSuplicantSssid);
 //                    }
-                    successfulConnectStateMachine.add(stateSuplicantSssid);
-                    generateStateMachineWifi.setStateMachine(supplicantStateCurrent, ssidCurrent);
+                        successfulConnectStateMachine.add(stateSuplicantSssid);
+                        generateStateMachineWifi.setStateMachine(supplicantStateCurrent, ssidCurrent);
+                    }
                 }
-            }
-        };
+            };
 
-        this.registerReceiver(this.broadcastReceiver, theFilter);
+            this.registerReceiver(this.broadcastReceiver, theFilter);
+        }
 
         return super.onStartCommand(intent, flags, startId);
     }
