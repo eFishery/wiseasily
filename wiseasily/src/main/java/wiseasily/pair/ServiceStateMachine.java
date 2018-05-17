@@ -36,7 +36,7 @@ public class ServiceStateMachine extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent!=null){
+        if(intent!=null && intent.getStringExtra("SSID")!=null){
             String ssid = intent.getStringExtra("SSID");
             Pair<SupplicantState, String> machineState = (Pair<SupplicantState, String>) intent.getSerializableExtra("machinestate");
 
