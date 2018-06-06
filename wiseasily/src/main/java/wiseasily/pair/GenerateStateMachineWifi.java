@@ -32,7 +32,10 @@ public class GenerateStateMachineWifi {
 
     public void setStateMachine(@NonNull SupplicantState supplicantState, @NonNull String ssid) {
         if(supplicantState!=null && ssid!=null && !ssid.isEmpty()){
+
             String ssidConfig = new WifiUtil().getConfigFormatSSID(ssidToConnect);
+            Pair<SupplicantState, String> inactiveUnknown = new Pair<>(SupplicantState.INACTIVE, "<unknown ssid>");
+            Pair<SupplicantState, String> inactiveOx = new Pair<>(SupplicantState.INACTIVE, "0x");
             Pair<SupplicantState, String> scanningUnknown = new Pair<>(SupplicantState.SCANNING, "<unknown ssid>");
             Pair<SupplicantState, String> scanningOx = new Pair<>(SupplicantState.SCANNING, "0x");
             Pair<SupplicantState, String> scanningSsid = new Pair<>(SupplicantState.SCANNING, ssidConfig);
@@ -42,37 +45,53 @@ public class GenerateStateMachineWifi {
             Pair<SupplicantState, String> associatingUnkown = new Pair<>(SupplicantState.ASSOCIATING, "<unknown ssid>");
             Pair<SupplicantState, String> associatingOx = new Pair<>(SupplicantState.ASSOCIATING, "0x");
             Pair<SupplicantState, String> associatingSsid = new Pair<>(SupplicantState.ASSOCIATING, ssidConfig);
+            Pair<SupplicantState, String> associatedUnkown = new Pair<>(SupplicantState.ASSOCIATED, "<unknown ssid>");
+            Pair<SupplicantState, String> associatedOx = new Pair<>(SupplicantState.ASSOCIATED, "0x");
             Pair<SupplicantState, String> associatedSsid = new Pair<>(SupplicantState.ASSOCIATED, ssidConfig);
             Pair<SupplicantState, String> fourWayHandshakeSsid = new Pair<>(SupplicantState.FOUR_WAY_HANDSHAKE, ssidConfig);
             Pair<SupplicantState, String> groupHandshakeSsid = new Pair<>(SupplicantState.GROUP_HANDSHAKE, ssidConfig);
             Pair<SupplicantState, String> completedSsid = new Pair<>(SupplicantState.COMPLETED, ssidConfig);
-            if(supplicantState == SupplicantState.SCANNING && (ssid.contains("<unknown ssid>") || ssid.contains("0x"))){
-                stateMachine = new ArrayList<>();
-                stateMachine.addAll(Arrays.asList(scanningOx, scanningUnknown, disconnectedSsid, associatingSsid, associatedSsid));
-            }else if(supplicantState == SupplicantState.SCANNING && (!ssid.contains("<unknown ssid>") && !ssid.contains("0x"))){
-                stateMachine = new ArrayList<>();
-                stateMachine.addAll(Arrays.asList(disconnectedUnkown, disconnectedOx, disconnectedSsid, associatingSsid, associatedSsid));
-            }else if(supplicantState == SupplicantState.DISCONNECTED && (ssid.contains("<unknown ssid>") || ssid.contains("0x"))){
-                stateMachine = new ArrayList<>();
-                stateMachine.addAll(Arrays.asList(scanningUnknown, scanningOx, associatingUnkown, associatingOx, associatedSsid));
-            }else if(supplicantState == SupplicantState.DISCONNECTED && (!ssid.contains("<unknown ssid>") && !ssid.contains("0x"))){
-                stateMachine = new ArrayList<>();
-                stateMachine.addAll(Arrays.asList(scanningUnknown, scanningOx, scanningSsid, associatingSsid, associatedSsid));
-            }else if(supplicantState == SupplicantState.ASSOCIATING && (!ssid.contains("<unknown ssid>") && !ssid.contains("0x"))){
-                stateMachine = new ArrayList<>();
-                stateMachine.addAll(Arrays.asList(disconnectedSsid, associatedSsid));
-            }else if(supplicantState == SupplicantState.ASSOCIATED && (!ssid.contains("<unknown ssid>") && !ssid.contains("0x"))){
-                stateMachine = new ArrayList<>();
-                stateMachine.addAll(Arrays.asList(fourWayHandshakeSsid, groupHandshakeSsid, completedSsid));
-            }else if(supplicantState == SupplicantState.FOUR_WAY_HANDSHAKE && (!ssid.contains("<unknown ssid>") && !ssid.contains("0x"))){
-                stateMachine = new ArrayList<>();
-                stateMachine.addAll(Arrays.asList(groupHandshakeSsid, completedSsid));
-            }else if(supplicantState == SupplicantState.GROUP_HANDSHAKE && (!ssid.contains("<unknown ssid>") && !ssid.contains("0x"))){
-                stateMachine = new ArrayList<>();
-                stateMachine.addAll(Collections.singletonList(completedSsid));
-            }else {
-                stateMachine = new ArrayList<>();
+
+            ArrayList<PairStateMachine<Pair<SupplicantState, String>, ArrayList<Pair>>>
+                listStateMachine = new ArrayList<>(
+                        Arrays.asList(
+                                new PairStateMachine<>(inactiveUnknown,
+                                        new ArrayList<>(Arrays.asList(inactiveUnknown, inactiveOx, disconnectedSsid))),
+                                new PairStateMachine<>(inactiveOx,
+                                        new ArrayList<>(Arrays.asList(inactiveUnknown, inactiveOx, disconnectedSsid))),
+                                new PairStateMachine<>(scanningUnknown,
+                                        new ArrayList<>(Arrays.asList(scanningOx, scanningUnknown, disconnectedUnkown, disconnectedOx, disconnectedSsid, associatingSsid, associatedSsid))),
+                                new PairStateMachine<>(scanningOx,
+                                        new ArrayList<>(Arrays.asList(scanningOx, scanningUnknown, disconnectedUnkown, disconnectedOx, disconnectedSsid, associatingSsid, associatedSsid))),
+                                new PairStateMachine<>(scanningSsid,
+                                        new ArrayList<>(Arrays.asList(disconnectedUnkown, disconnectedOx, disconnectedSsid, associatingUnkown, associatingOx, associatingSsid, associatedSsid))),
+                                new PairStateMachine<>(disconnectedUnkown,
+                                        new ArrayList<>(Arrays.asList(scanningUnknown, scanningOx, disconnectedUnkown, disconnectedOx, associatingUnkown, associatingOx, associatingSsid, associatedSsid))),
+                                new PairStateMachine<>(disconnectedOx,
+                                        new ArrayList<>(Arrays.asList(scanningUnknown, scanningOx, scanningSsid, disconnectedUnkown, disconnectedOx, associatingUnkown, associatingOx, associatingSsid, associatedSsid))),
+                                new PairStateMachine<>(disconnectedSsid,
+                                        new ArrayList<>(Arrays.asList(scanningUnknown, scanningOx, scanningSsid, disconnectedUnkown, disconnectedOx, disconnectedSsid, associatingUnkown, associatingOx, associatingSsid, associatedUnkown, associatedOx, associatedSsid))),
+                                new PairStateMachine<>(associatingSsid,
+                                        new ArrayList<>(Arrays.asList(disconnectedUnkown, disconnectedOx, disconnectedSsid, associatedSsid))),
+                                new PairStateMachine<>(associatedSsid,
+                                        new ArrayList<>(Arrays.asList(disconnectedUnkown, disconnectedOx, fourWayHandshakeSsid, groupHandshakeSsid, completedSsid))),
+                                new PairStateMachine<>(fourWayHandshakeSsid,
+                                        new ArrayList<>(Arrays.asList(groupHandshakeSsid, completedSsid))),
+                                new PairStateMachine<>(groupHandshakeSsid,
+                                        new ArrayList<>(Collections.singletonList(completedSsid)))
+                        )
+            );
+
+            Pair<SupplicantState, String> pairCurrent = new Pair<>(supplicantState, ssid);
+
+            for(PairStateMachine<
+                    Pair<SupplicantState, String>,
+                    ArrayList<Pair>> machine : listStateMachine){
+                if(machine.getPairState().equals(pairCurrent)){
+                    stateMachine = machine.getPairStateArrayList();
+                }
             }
+
         }
     }
 }

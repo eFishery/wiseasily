@@ -124,11 +124,13 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
         WifiManager wm = (WifiManager) cxt.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wm != null && wm.setWifiEnabled(true)) {
             List<WifiConfiguration> networks = wm.getConfiguredNetworks();
-            for (WifiConfiguration wifiConfig : networks) {
-                if (wifiConfig.SSID.equals(ssid))
-                    state = wm.enableNetwork(wifiConfig.networkId, true);
-                else
-                    wm.disableNetwork(wifiConfig.networkId);
+            if(networks!=null){
+                for (WifiConfiguration wifiConfig : networks) {
+                    if (wifiConfig.SSID.equals(ssid))
+                        state = wm.enableNetwork(wifiConfig.networkId, true);
+                    else
+                        wm.disableNetwork(wifiConfig.networkId);
+                }
             }
             wm.reconnect();
         }

@@ -18,10 +18,8 @@ public class Pair<SupplicantState,String> implements Serializable {
     }
 
     public SupplicantState getSupplicantState() { return supplicantState; }
-    public String getSsid() { return ssid; }
 
-    @Override
-    public int hashCode() { return supplicantState.hashCode() ^ ssid.hashCode(); }
+    public String getSsid() { return ssid; }
 
     @Override
     public boolean equals(Object o) {
