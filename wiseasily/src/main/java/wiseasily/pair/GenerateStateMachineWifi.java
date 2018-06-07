@@ -13,6 +13,7 @@ import wiseasily.util.WifiUtil;
 /**
  * بِسْمِ اللّهِ الرَّحْمَنِ
  * Created by putrabangga on 13/02/18.
+ * last update = 7 June 2018
  */
 
 public class GenerateStateMachineWifi {
@@ -66,19 +67,27 @@ public class GenerateStateMachineWifi {
                                 new PairStateMachine<>(scanningSsid,
                                         new ArrayList<>(Arrays.asList(disconnectedUnkown, disconnectedOx, disconnectedSsid, associatingUnkown, associatingOx, associatingSsid, associatedSsid))),
                                 new PairStateMachine<>(disconnectedUnkown,
-                                        new ArrayList<>(Arrays.asList(scanningUnknown, scanningOx, scanningSsid, disconnectedUnkown, disconnectedOx, associatingUnkown, associatingOx, associatingSsid, associatedSsid))),
+                                        new ArrayList<>(Arrays.asList(scanningUnknown, scanningOx, scanningSsid, disconnectedUnkown, disconnectedOx, associatingUnkown, associatingOx, associatingSsid, associatedUnkown, associatedOx, associatedSsid))),
                                 new PairStateMachine<>(disconnectedOx,
-                                        new ArrayList<>(Arrays.asList(scanningUnknown, scanningOx, scanningSsid, disconnectedUnkown, disconnectedOx, associatingUnkown, associatingOx, associatingSsid, associatedSsid))),
+                                        new ArrayList<>(Arrays.asList(scanningUnknown, scanningOx, scanningSsid, disconnectedUnkown, disconnectedOx, associatingUnkown, associatingOx, associatingSsid, associatedUnkown, associatedOx, associatedSsid))),
                                 new PairStateMachine<>(disconnectedSsid,
                                         new ArrayList<>(Arrays.asList(scanningUnknown, scanningOx, scanningSsid, disconnectedUnkown, disconnectedOx, disconnectedSsid, associatingUnkown, associatingOx, associatingSsid, associatedUnkown, associatedOx, associatedSsid))),
+                                new PairStateMachine<>(associatingUnkown,
+                                        new ArrayList<>(Arrays.asList(disconnectedUnkown, disconnectedOx, disconnectedSsid, associatedUnkown, associatedOx, associatedSsid))),
+                                new PairStateMachine<>(associatingOx,
+                                        new ArrayList<>(Arrays.asList(disconnectedUnkown, disconnectedOx, disconnectedSsid, associatedUnkown, associatedOx, associatedSsid))),
                                 new PairStateMachine<>(associatingSsid,
-                                        new ArrayList<>(Arrays.asList(disconnectedSsid, associatedSsid))),
+                                        new ArrayList<>(Arrays.asList(disconnectedUnkown, disconnectedOx, disconnectedSsid, associatedSsid))),
+                                new PairStateMachine<>(associatedUnkown,
+                                        new ArrayList<>(Arrays.asList(disconnectedUnkown, disconnectedOx))),
+                                new PairStateMachine<>(associatedOx,
+                                        new ArrayList<>(Arrays.asList(disconnectedUnkown, disconnectedOx))),
                                 new PairStateMachine<>(associatedSsid,
                                         new ArrayList<>(Arrays.asList(disconnectedUnkown, disconnectedOx, fourWayHandshakeSsid, groupHandshakeSsid, completedSsid))),
                                 new PairStateMachine<>(fourWayHandshakeSsid,
-                                        new ArrayList<>(Arrays.asList(groupHandshakeSsid, completedSsid))),
+                                        new ArrayList<>(Arrays.asList(disconnectedSsid, groupHandshakeSsid, completedSsid))),
                                 new PairStateMachine<>(groupHandshakeSsid,
-                                        new ArrayList<>(Collections.singletonList(completedSsid)))
+                                        new ArrayList<>(Arrays.asList(disconnectedSsid, completedSsid)))
                         )
             );
 
