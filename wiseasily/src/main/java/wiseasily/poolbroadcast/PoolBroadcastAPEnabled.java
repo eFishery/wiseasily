@@ -106,8 +106,11 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
                         isSuplicantCompletedCallback.onFail();
                     }
                 }
-                generateStateMachineWifi.setStateMachine(supplicantStateCurrent, ssidCurrent);
-                i++;
+                //ignore if i==0 and suplicant disconnected with ssid invert with ssid who try to connect
+                if (i != 0 || !supplicantStateCurrent.equals(SupplicantState.DISCONNECTED) || ssidCurrent.equals(ssid)) {
+                    generateStateMachineWifi.setStateMachine(supplicantStateCurrent, ssidCurrent);
+                    i++;
+                }
             }
         }
     }

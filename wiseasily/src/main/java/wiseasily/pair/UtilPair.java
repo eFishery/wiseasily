@@ -1,7 +1,6 @@
 package wiseasily.pair;
 
 import android.net.wifi.SupplicantState;
-import android.util.Log;
 
 import java.util.ArrayList;
 
