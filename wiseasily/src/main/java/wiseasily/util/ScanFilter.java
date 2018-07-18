@@ -3,7 +3,9 @@ package wiseasily.util;
 import android.net.wifi.ScanResult;
 import android.support.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import wiseasily.util.util.ProximityUtils;
@@ -72,8 +74,25 @@ public class ScanFilter {
         this.proximity = proximity;
     }
 
-    public boolean matchesStart(ScanResult scanResult) {
-        return scanResult != null && !(mac != null && !scanResult.BSSID.toLowerCase().startsWith(mac)) && !(ssid != null && !scanResult.SSID.toLowerCase().startsWith(ssid)) && !(includeSsids != null && !includeSsids.isEmpty() && !includeSsids.contains(scanResult.SSID.toLowerCase())) && !(excludeSsids != null && !excludeSsids.isEmpty() && excludeSsids.contains(scanResult.SSID.toLowerCase())) && !(channels != null && !channels.contains(WifiUtils.toChannel(scanResult.frequency))) && !(proximity != null && proximity != ProximityUtils.getProximity(scanResult.level, scanResult.frequency));
+    private boolean matchesStart(ScanResult scanResult) {
+        return scanResult != null &&
+                !(mac != null && !scanResult.BSSID.toLowerCase().startsWith(mac))
+                && !(ssid != null && !ssid.isEmpty() && !scanResult.SSID.toLowerCase().startsWith(ssid))
+                && !(includeSsids != null && !includeSsids.isEmpty() && !includeSsids.contains(scanResult.SSID.toLowerCase()))
+                && !(excludeSsids != null && !excludeSsids.isEmpty() && excludeSsids.contains(scanResult.SSID.toLowerCase()))
+                && !(channels != null && !channels.contains(WifiUtils.toChannel(scanResult.frequency)))
+                && !(proximity != null && proximity != ProximityUtils.getProximity(scanResult.level, scanResult.frequency));
 
+    }
+
+    public List<ScanResult> filterScanResult(List<ScanResult> scanResults){
+
+        List<ScanResult> scanResultsFilter = new ArrayList<>();
+        for(ScanResult scanResult : scanResults){
+            if(matchesStart(scanResult)){
+                scanResultsFilter.add(scanResult);
+            }
+        }
+        return scanResultsFilter;
     }
 }

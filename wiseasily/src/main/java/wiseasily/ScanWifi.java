@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.support.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import wiseasily.poolbroadcast.PoolBroadcastScanWifi;
@@ -38,7 +37,7 @@ class ScanWifi implements SourceCallback.WisEasilyScanCallback {
         }
     }
 
-    void changeScanInterval(int scanInterval) {
+    void setScanInterval(int scanInterval) {
         if (scanInterval < 0) {
             throw new IllegalArgumentException("mScanInterval cannot be negative");
         }
@@ -48,20 +47,21 @@ class ScanWifi implements SourceCallback.WisEasilyScanCallback {
         poolBroadcastScanWifi.changeScanInterval(scanInterval);
     }
 
-    void changeFilter(@NonNull ScanFilter scanFilter) {
+    void setFilter(@NonNull ScanFilter scanFilter) {
         this.scanFilter = scanFilter;
     }
 
     @Override
     public void onAPChanged(List<ScanResult> scanResults) {
         if(callback!=null){
-            List<ScanResult> scanResultsFilter = new ArrayList<>();
-            for(ScanResult scanResult : scanResults){
-                if(scanFilter==null || scanFilter.matchesStart(scanResult)){
-                    scanResultsFilter.add(scanResult);
+            if(scanFilter!=null){
+                List<ScanResult> ScanResultFilter = scanFilter.filterScanResult(scanResults);
+                if(ScanResultFilter!=null && !ScanResultFilter.isEmpty()){
+                    callback.onAPChanged(ScanResultFilter);
                 }
+            }else {
+                callback.onAPChanged(scanResults);
             }
-            callback.onAPChanged(scanResultsFilter);
         }
     }
 }

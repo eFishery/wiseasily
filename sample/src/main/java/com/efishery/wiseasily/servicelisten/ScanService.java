@@ -46,7 +46,7 @@ public class ScanService extends Service implements SourceCallback.WisEasilyWifi
         channels.add(7);
         wisEasily.scan(this);
         ScanFilter scanFilter = new ScanFilter(null, "efishery", null, null, channels, null);
-        wisEasily.scanChangeFilter(scanFilter);
+        wisEasily.scanSetFilter(scanFilter);
         return START_STICKY;
     }
 

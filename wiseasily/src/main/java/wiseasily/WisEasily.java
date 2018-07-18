@@ -72,12 +72,12 @@ public class WisEasily {
         scanWifi.start(callback);
     }
 
-    public void scanChangeInterval(@NonNull int interval) {
-        scanWifi.changeScanInterval(interval);
+    public void scanSetInterval(@NonNull int interval) {
+        scanWifi.setScanInterval(interval);
     }
 
-    public void scanChangeFilter(@NonNull ScanFilter scanFilter) {
-        scanWifi.changeFilter(scanFilter);
+    public void scanSetFilter(@NonNull ScanFilter scanFilter) {
+        scanWifi.setFilter(scanFilter);
     }
 
     public void stopScan() {
