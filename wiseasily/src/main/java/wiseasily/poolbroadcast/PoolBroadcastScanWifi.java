@@ -99,7 +99,9 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction()!=null && (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) || intent.getAction().equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION) || intent.getAction().equals(WifiManager.RSSI_CHANGED_ACTION))){
             initScan();
-            scanCallback.onAPChanged(mWifiManager.getScanResults());
+            if(mWifiManager.getScanResults()!=null && !mWifiManager.getScanResults().isEmpty()){
+                scanCallback.onAPChanged(mWifiManager.getScanResults());
+            }
 
         }
     }
