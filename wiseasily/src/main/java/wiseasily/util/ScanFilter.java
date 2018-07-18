@@ -88,9 +88,11 @@ public class ScanFilter {
     public List<ScanResult> filterScanResult(List<ScanResult> scanResults){
 
         List<ScanResult> scanResultsFilter = new ArrayList<>();
-        for(ScanResult scanResult : scanResults){
-            if(matchesStart(scanResult)){
-                scanResultsFilter.add(scanResult);
+        if(scanResults!=null){
+            for(ScanResult scanResult : scanResults){
+                if(matchesStart(scanResult)){
+                    scanResultsFilter.add(scanResult);
+                }
             }
         }
         return scanResultsFilter;
