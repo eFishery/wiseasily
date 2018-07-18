@@ -61,6 +61,10 @@ public class WisEasily {
         return mWifiManager.getScanResults();
     }
 
+    public List<ScanResult> getWifiResultFilter(ScanFilter scanFilter) {
+        return scanFilter.filterScanResult(mWifiManager.getScanResults());
+    }
+
     @RequiresPermission(allOf = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_NETWORK_STATE, Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION})
     public void isWifiPatternFound(@NonNull String patternSsid, int timeoutSecond, int totalScan, @NonNull SourceCallback.APFoundCallback callback) {
         PoolBroadcastAPFound poolBroadcastAPFound = new PoolBroadcastAPFound(context, timeoutSecond, totalScan, patternSsid);
