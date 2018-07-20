@@ -49,8 +49,7 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
         this(context, INTERVAL_IMMEDIATE, callback);
     }
 
-    public void startScanning(boolean getInstantResult, boolean autoEnableWifi){
-        this.autoEnableWifi = autoEnableWifi;
+    public void startScanning(boolean getInstantResult){
         if (mWifiManager != null) {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
@@ -97,6 +96,10 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
             throw new IllegalArgumentException("mScanInterval cannot be negative");
         }
         mScanInterval = scanInterval;
+    }
+
+    public void setAutoEnableWifi(boolean enable) {
+        this.autoEnableWifi = enable;
     }
 
     @Override
