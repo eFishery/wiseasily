@@ -115,7 +115,9 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
     }
 
     private void scan() {
-        mWifiManager.setWifiEnabled(autoEnableWifi);
+        if(autoEnableWifi){
+            mWifiManager.setWifiEnabled(true);
+        }
         mWifiManager.startScan();
     }
 }
