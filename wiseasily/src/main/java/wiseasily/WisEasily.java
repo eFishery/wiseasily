@@ -84,6 +84,10 @@ public class WisEasily {
         scanWifi.setFilter(scanFilter);
     }
 
+    public void scanSetAutoEnableWifi(boolean enable) {
+        scanWifi.autoEnableWifi(enable);
+    }
+
     public void stopScan() {
         scanWifi.stop();
     }

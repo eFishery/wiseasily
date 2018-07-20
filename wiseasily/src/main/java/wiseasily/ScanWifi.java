@@ -20,6 +20,7 @@ class ScanWifi implements SourceCallback.WisEasilyScanCallback {
     private PoolBroadcastScanWifi poolBroadcastScanWifi;
     private SourceCallback.WisEasilyScanCallback callback;
     private ScanFilter scanFilter;
+    private boolean autoEnableWifi = true;
 
     ScanWifi(@NonNull Context context) {
         this.mContext = context;
@@ -28,7 +29,7 @@ class ScanWifi implements SourceCallback.WisEasilyScanCallback {
     void start(@NonNull SourceCallback.WisEasilyScanCallback callback){
         this.callback = callback;
         poolBroadcastScanWifi = new PoolBroadcastScanWifi(mContext, this);
-        poolBroadcastScanWifi.startScanning(true);
+        poolBroadcastScanWifi.startScanning(true, autoEnableWifi);
     }
 
     void stop(){
@@ -49,6 +50,10 @@ class ScanWifi implements SourceCallback.WisEasilyScanCallback {
 
     void setFilter(@NonNull ScanFilter scanFilter) {
         this.scanFilter = scanFilter;
+    }
+
+    void autoEnableWifi(boolean enable){
+        this.autoEnableWifi = enable;
     }
 
     @Override
