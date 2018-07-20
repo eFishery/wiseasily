@@ -56,9 +56,7 @@ class ScanWifi implements SourceCallback.WisEasilyScanCallback {
         if(callback!=null){
             if(scanFilter!=null){
                 List<ScanResult> ScanResultFilter = scanFilter.filterScanResult(scanResults);
-                if(ScanResultFilter!=null && !ScanResultFilter.isEmpty()){
-                    callback.onAPChanged(ScanResultFilter);
-                }
+                callback.onAPChanged(ScanResultFilter);
             }else {
                 callback.onAPChanged(scanResults);
             }

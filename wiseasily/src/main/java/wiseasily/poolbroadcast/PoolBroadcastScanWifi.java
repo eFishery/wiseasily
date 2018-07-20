@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 
 import com.efishery.putrabangga.wiseasily.BuildConfig;
 
+import java.util.ArrayList;
+
 import wiseasily.source.SourceCallback;
 
 /**
@@ -99,8 +101,12 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction()!=null && (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) || intent.getAction().equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION) || intent.getAction().equals(WifiManager.RSSI_CHANGED_ACTION))){
             initScan();
-            if(mWifiManager.getScanResults()!=null && !mWifiManager.getScanResults().isEmpty()){
-                scanCallback.onAPChanged(mWifiManager.getScanResults());
+            if(mWifiManager!=null){
+                if(mWifiManager.getScanResults()!=null && !mWifiManager.getScanResults().isEmpty()){
+                    scanCallback.onAPChanged(mWifiManager.getScanResults());
+                }else {
+                    scanCallback.onAPChanged(new ArrayList<>());
+                }
             }
 
         }
