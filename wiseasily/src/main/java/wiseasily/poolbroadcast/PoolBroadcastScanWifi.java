@@ -36,7 +36,7 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
             initScan();
         }
     };
-    private boolean autoEnableWifi = true;
+    private static boolean autoEnableWifi = true;
 
     public PoolBroadcastScanWifi(Context mContext, int mScanInterval, SourceCallback.WisEasilyScanCallback scanCallback) {
         this.mContext = mContext;
@@ -80,8 +80,12 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
 
     public void stopScanning(){
         try  {
-            mScanHandler.removeCallbacks(mScanRunnable);
-            mContext.unregisterReceiver(this);
+            if(mScanHandler!=null && mScanRunnable!=null){
+                mScanHandler.removeCallbacks(mScanRunnable);
+            }
+            if(mContext!=null){
+                mContext.unregisterReceiver(this);
+            }
         }
         catch (IllegalArgumentException e) {
             // Check wether we are in debug mode
@@ -99,7 +103,7 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
     }
 
     public void setAutoEnableWifi(boolean enable) {
-        this.autoEnableWifi = enable;
+        autoEnableWifi = enable;
     }
 
     @Override
@@ -118,9 +122,11 @@ public class PoolBroadcastScanWifi extends BroadcastReceiver  {
     }
 
     private void scan() {
-        if(autoEnableWifi){
-            mWifiManager.setWifiEnabled(true);
+        if(mWifiManager!=null){
+            if(autoEnableWifi){
+                mWifiManager.setWifiEnabled(true);
+            }
+            mWifiManager.startScan();
         }
-        mWifiManager.startScan();
     }
 }

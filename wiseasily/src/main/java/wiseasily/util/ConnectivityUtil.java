@@ -37,7 +37,7 @@ public class ConnectivityUtil {
         ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if(mConnectivityManager!=null){
             NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
-            if(activeNetwork!=null) {
+            if(activeNetwork!=null && activeNetwork.getExtraInfo()!=null) {
                 Log.d("Connect Wifi", "Active Network " + activeNetwork.toString());
                 return activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.getExtraInfo().contains(containtChar);
             }else {
@@ -54,7 +54,7 @@ public class ConnectivityUtil {
         ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if(mConnectivityManager!=null){
             NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
-            if(activeNetwork!=null) {
+            if(activeNetwork!=null && activeNetwork.getExtraInfo()!=null) {
                 Log.d("Connect Wifi", "Active Network " + activeNetwork.toString());
                 if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI){
                     return ConnectionData.WIFI;
