@@ -21,6 +21,7 @@ import wiseasily.util.WifiUtil;
 
 public class PoolBroadcastAPFound extends BroadcastReceiver  {
 
+    private static boolean resultFound = false;
     private final Context mContext;
     private final String ssid;
     private final PoolBroadcastWifiOff poolBroadcastWifiOff;
@@ -37,9 +38,9 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
             mHandler.removeCallbacks(mOutOfTime);
             if(apFoundCallback!=null){
                 if(!wifiUtil.isScanResultsContainsSsid(ssid, mWifiManager.getScanResults())){
-                    apFoundCallback.onAPNotFound();
+                    apNotFound();
                 }else {
-                    apFoundCallback.onAPNotFound();
+                    apFound();
                 }
             }
         }
@@ -81,7 +82,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
                     @Override
                     public void onWifiOff() {
                         stopListen();
-                        callback.onAPNotFound();
+                        apNotFound();
                     }
                 });
                 postDelay();
@@ -116,12 +117,12 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
                 count++;
                 if(count>totalScan){
                     count=0;
-                    apFoundCallback.onAPNotFound();
+                    apNotFound();
                 }else {
                     postDelay();
                 }
             }else {
-                apFoundCallback.onAPFound();
+                apFound();
             }
         }
     }
@@ -131,5 +132,19 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
             poolBroadcastWifiOff.stopListen();
         }
         stopListen();
+    }
+
+    private void apFound() {
+        if(!resultFound) {
+            resultFound = true;
+            apFoundCallback.onAPFound();
+        }
+    }
+
+    private void apNotFound() {
+        if(!resultFound){
+            resultFound=true;
+            apFoundCallback.onAPNotFound();
+        }
     }
 }

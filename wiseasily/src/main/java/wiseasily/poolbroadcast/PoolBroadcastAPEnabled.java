@@ -29,6 +29,7 @@ import wiseasily.util.WifiUtil;
 
 public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
 
+    private static boolean resultFound = false;
     private final Context mContext;
     private final WifiManager mWifiManager;
     private final String ssid;
@@ -64,12 +65,12 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
                     @Override
                     public void onWifiOff() {
                         stopListen();
-                        callback.onFail();
+                        failCallback();
                     }
                 });
             }
         }else {
-            callback.onFail();
+            isSuplicantCompletedCallback.onFail();
         }
     }
 
@@ -94,7 +95,7 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
             Log.d("Connect Wifi", "AP Enabled ssidCurrent"+ ssidCurrent);
             if(supplicantStateCurrent == SupplicantState.COMPLETED && wifiUtil.getConfigFormatSSID(ssid).equals(ssidCurrent)){
                 stopListenAll();
-                isSuplicantCompletedCallback.onSuccess();
+                successCallback();
             }else {
                 if(i!=0){
                     Pair<SupplicantState, String> stateSuplicantSssid = new UtilPair().getStateSsidPair(supplicantStateCurrent, ssidCurrent);
@@ -103,7 +104,7 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
                     if(!new UtilPair().containsPair(machineState, stateSuplicantSssid)){
                         intentToServiceStateMachine(context, stateSuplicantSssid);
                         stopListenAll();
-                        isSuplicantCompletedCallback.onFail();
+                        failCallback();
                     }
                 }
                 //ignore if i==0 and suplicant disconnected with ssid invert with ssid who try to connect
@@ -145,5 +146,19 @@ public class PoolBroadcastAPEnabled extends BroadcastReceiver  {
             poolBroadcastWifiOff.stopListen();
         }
         stopListen();
+    }
+
+    private void successCallback() {
+        if(!resultFound) {
+            resultFound = true;
+            isSuplicantCompletedCallback.onSuccess();
+        }
+    }
+
+    private void failCallback() {
+        if(!resultFound){
+            resultFound=true;
+            isSuplicantCompletedCallback.onFail();
+        }
     }
 }
