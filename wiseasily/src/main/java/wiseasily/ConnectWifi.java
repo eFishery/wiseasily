@@ -1,13 +1,16 @@
 package wiseasily;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import wiseasily.poolbroadcast.PoolBroadcastAPEnabled;
 import wiseasily.poolbroadcast.PoolBroadcastAPFound;
 import wiseasily.poolbroadcast.PoolBroadcastWifiConnected;
+import wiseasily.poolbroadcast.PoolBroadcastWifiForceConnected;
 import wiseasily.source.SourceCallback;
 import wiseasily.util.ConnectionData;
 import wiseasily.util.ConnectivityUtil;
@@ -59,12 +62,17 @@ class ConnectWifi {
                     @Override
                     public void onSuccess() {
                         Log.d("Connect Wifi", "poolBroadcastAPEnabled");
-                        PoolBroadcastWifiConnected poolBroadcastWifiConnected = new PoolBroadcastWifiConnected(mContext, ssid);
+                        PoolBroadcastWifiForceConnected poolBroadcastWifiConnected = new PoolBroadcastWifiForceConnected(mContext, ssid);
                         Log.d("Connect Wifi", "poolBroadcastWifiConnected");
-                        poolBroadcastWifiConnected.startListen(new SourceCallback.SuccessCallback() {
+                        poolBroadcastWifiConnected.startListen(new SourceCallback.ConnectCallback() {
                             @Override
                             public void onSuccess() {
                                 callback.onSuccess();
+                            }
+
+                            @Override
+                            public void onFail() {
+                                callback.onError("Can Not Connect To Wifi");
                             }
                         });
                     }
@@ -123,7 +131,8 @@ class ConnectWifi {
         }
     }
 
-    public void backToPrevNetwork(){
+    void backToPrevNetwork(){
+        unForceWifiUsage();
         if(prevConnection ==ConnectionData.EMPTY){
             disconnectedToAP();
             boolean success = wifiUtil.forgetCurrentNetwork(mContext);
@@ -144,6 +153,19 @@ class ConnectWifi {
 
                 }
             });
+        }
+    }
+
+    void unForceWifiUsage(){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ConnectivityManager manager = (ConnectivityManager) mContext
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (manager != null) {
+                manager.bindProcessToNetwork(null);
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ConnectivityManager.setProcessDefaultNetwork(null);
         }
     }
 }

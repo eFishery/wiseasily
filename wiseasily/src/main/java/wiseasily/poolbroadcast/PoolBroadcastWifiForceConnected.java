@@ -9,7 +9,9 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -52,8 +54,8 @@ public class PoolBroadcastWifiForceConnected extends BroadcastReceiver {
                 callback.onFail();
             }
         });
-        mContext.registerReceiver(this, new IntentFilter(NETWORK_AVAILABILITY_ACTION));
         forceToUseWifiWithoutInternet();
+        mContext.registerReceiver(this, new IntentFilter(NETWORK_AVAILABILITY_ACTION));
     }
 
     private void stopListenAll() {
@@ -76,31 +78,48 @@ public class PoolBroadcastWifiForceConnected extends BroadcastReceiver {
 
 
     private void forceToUseWifiWithoutInternet(){
-        Log.d("Connect Wifi", "Force to Connect ");
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            NetworkRequest.Builder request = new NetworkRequest.Builder();
-            request.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
-            if (mConnectivityManager != null) {
-                mConnectivityManager.registerNetworkCallback(request.build(), new ConnectivityManager.NetworkCallback() {
-                    @Override
-                    public void onAvailable(Network network) {
-                        Log.d("Connect Wifi", "Network onAvailable");
-                        boolean successForceConnect;
-                        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
-                            successForceConnect = ConnectivityManager.setProcessDefaultNetwork(network);
+
+            boolean canWriteFlag = false;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                canWriteFlag = Settings.System.canWrite(mContext);
+
+                if (!canWriteFlag) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                    intent.setData(Uri.parse("package:" + mContext.getPackageName()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    mContext.startActivity(intent);
+                }
+            }
+
+            if (((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && canWriteFlag)
+                    || ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    && !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M))) {
+                NetworkRequest.Builder request = new NetworkRequest.Builder();
+                request.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+                if (mConnectivityManager != null) {
+                    mConnectivityManager.requestNetwork(request.build(), new ConnectivityManager.NetworkCallback() {
+                        @Override
+                        public void onAvailable(Network network) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                mConnectivityManager.bindProcessToNetwork(network);
+                            } else {
+                                //This method was deprecated in API level 23
+                                ConnectivityManager.setProcessDefaultNetwork(network);
+                            }
+                            try {
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             mConnectivityManager.unregisterNetworkCallback(this);
-                        }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                            successForceConnect = mConnectivityManager.bindProcessToNetwork(network);
-                            mConnectivityManager.unregisterNetworkCallback(this);
-                        }else {
-                            successForceConnect = true;
                         }
-                        Log.d("Connect Wifi", "Network onAvailable "+successForceConnect);
-                        mContext.sendBroadcast(getNetworkAvailabilityIntent(successForceConnect));
-                    }
-                });
-            }else {
-                mContext.sendBroadcast(getNetworkAvailabilityIntent(false));
+                    });
+                }else {
+                    mContext.sendBroadcast(getNetworkAvailabilityIntent(false));
+                }
             }
         }else {
             mContext.sendBroadcast(getNetworkAvailabilityIntent(true));
@@ -119,7 +138,7 @@ public class PoolBroadcastWifiForceConnected extends BroadcastReceiver {
         if(intent.getAction()!=null && intent.getAction().equals(NETWORK_AVAILABILITY_ACTION)){
             Log.d("Connect Wifi", "callbackWifiConnected intent="+ intent.toString()+" extras="+intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false));
             stopListenAll();
-            if (mConnectivityManager != null && !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false)) {
+            if (mConnectivityManager != null && !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true)) {
                 NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
                 if (activeNetwork != null) {
                     Log.d("Connect Wifi","Active Network " + activeNetwork.toString());

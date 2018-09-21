@@ -1,9 +1,17 @@
 package wiseasily.util;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -65,6 +73,13 @@ public class WifiUtil {
         if(ssid!=null && !ssid.isEmpty() && mWifiManager!=null){
             int netId;
             WifiConfiguration config = new WifiConfiguration();
+            //clear alloweds
+            config.allowedAuthAlgorithms.clear();
+            config.allowedGroupCiphers.clear();
+            config.allowedKeyManagement.clear();
+            config.allowedPairwiseCiphers.clear();
+            config.allowedProtocols.clear();
+
             config.SSID = getConfigFormatSSID(ssid);
             config.status = WifiConfiguration.Status.ENABLED;
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);

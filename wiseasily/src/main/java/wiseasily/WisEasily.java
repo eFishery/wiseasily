@@ -57,6 +57,10 @@ public class WisEasily {
         connectWifi.backToPrevNetwork();
     }
 
+    public void unForceWifiUsage(){
+        connectWifi.unForceWifiUsage();
+    }
+
     public List<ScanResult> getWifiResult() {
         return mWifiManager.getScanResults();
     }
