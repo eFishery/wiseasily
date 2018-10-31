@@ -74,7 +74,7 @@ public class ScanFilter {
         this.proximity = proximity;
     }
 
-    private boolean matchesStart(ScanResult scanResult) {
+    public boolean matchesStart(ScanResult scanResult) {
         return scanResult != null &&
                 !(mac != null && !scanResult.BSSID.toLowerCase().startsWith(mac))
                 && !(ssid != null && !ssid.isEmpty() && !scanResult.SSID.toLowerCase().startsWith(ssid))
