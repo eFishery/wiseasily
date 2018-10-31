@@ -42,7 +42,7 @@ public class PoolBroadcastWifiConnected extends BroadcastReceiver  {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction()!=null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)){
-            if(connectivityUtil.isConnectedToAP(ssid, context)){
+            if(android.os.Build.MODEL.equals("MITO A21 (A21)") || connectivityUtil.isConnectedToAP(ssid, context)){
                 stopListen();
                 isConnectivityAction.onSuccess();
             }
