@@ -5,7 +5,7 @@ group='com.github.eFishery'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '26.0.3'
 
     defaultConfig {
         minSdkVersion 15
@@ -41,7 +41,7 @@ repositories {
 
 dependencies {
     compile 'com.github.logentriescommunity:le_android:logentries-android-4.4.1'
-    compile 'com.android.support:support-annotations:24.2.0'
+    compile 'com.android.support:support-annotations:28.0.0'
     testCompile 'junit:junit:4.12'
     androidTestCompile 'junit:junit:4.12'
 }
