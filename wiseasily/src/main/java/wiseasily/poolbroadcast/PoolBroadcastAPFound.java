@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -55,7 +56,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
         wifiUtil = new WifiUtil();
         this.mContext = context;
         this.ssid = ssid;
-        mHandler = new Handler();
+        mHandler = new Handler(Looper.getMainLooper());
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
     }
@@ -63,7 +64,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
     public PoolBroadcastAPFound(@NonNull Context context, @NonNull String ssid) {
         this.mContext = context;
         this.ssid = ssid;
-        mHandler = new Handler();
+        mHandler = new Handler(Looper.getMainLooper());
         wifiUtil = new WifiUtil();
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
@@ -77,12 +78,9 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
                 mWifiManager.startScan();
                 Log.d("Connect Wifi", "AP Find startListen");
                 mContext.registerReceiver(this, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-                poolBroadcastWifiOff.startListen(new PoolBroadcastWifiOff.ConnectWifiFail() {
-                    @Override
-                    public void onWifiOff() {
-                        stopListen();
-                        callback.onAPNotFound();
-                    }
+                poolBroadcastWifiOff.startListen(() -> {
+                    stopListen();
+                    callback.onAPNotFound();
                 });
                 postDelay();
             }
