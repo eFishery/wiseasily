@@ -9,9 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.efishery.putrabangga.wiseasily.BuildConfig;
-
 import wiseasily.source.SourceCallback;
 import wiseasily.util.WifiUtil;
 
@@ -30,7 +28,7 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
     private final WifiUtil wifiUtil;
     private SourceCallback.APFoundCallback apFoundCallback;
     private final WifiManager mWifiManager;
-    private Handler mHandler;
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
     private int count = 0;
     private final Runnable mOutOfTime = new Runnable() {
         @Override
@@ -56,7 +54,6 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
         wifiUtil = new WifiUtil();
         this.mContext = context;
         this.ssid = ssid;
-        mHandler = new Handler(Looper.getMainLooper());
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);
     }
@@ -64,7 +61,6 @@ public class PoolBroadcastAPFound extends BroadcastReceiver  {
     public PoolBroadcastAPFound(@NonNull Context context, @NonNull String ssid) {
         this.mContext = context;
         this.ssid = ssid;
-        mHandler = new Handler(Looper.getMainLooper());
         wifiUtil = new WifiUtil();
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         poolBroadcastWifiOff = new PoolBroadcastWifiOff(mContext);

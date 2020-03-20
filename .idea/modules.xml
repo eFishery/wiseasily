@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/efishery-wiseasily.iml" filepath="$PROJECT_DIR$/efishery-wiseasily.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/wiseasily.iml" filepath="$PROJECT_DIR$/wiseasily.iml" />
       <module fileurl="file://$PROJECT_DIR$/wiseasily/wiseasily-wiseasily.iml" filepath="$PROJECT_DIR$/wiseasily/wiseasily-wiseasily.iml" />
